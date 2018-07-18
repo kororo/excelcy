@@ -239,6 +239,8 @@ TODO
     - [ ] Add tag annotation in sheet: train
     - [ ] Add list of patterns easily (such as kitten breed)
 
+- [ ] Improve speed and performance
+- [ ] Create data standard
 - [ ] Submit to Prodigy Universe
 
 

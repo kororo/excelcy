@@ -288,7 +288,6 @@ class DataTrainer(object):
         nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
         optimizer = nlp.begin_training()
         for itn in range(train_iteration):
-            # print('iteration: %s' % itn)
             random.shuffle(data_train_key)
             for key in data_train_key:
                 data_instance = self.data_train[key]
