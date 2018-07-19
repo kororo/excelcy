@@ -3,7 +3,6 @@ import shutil
 import tempfile
 from unittest import TestCase
 from excelcy import DataTrainer
-from spacy.cli import download
 
 
 class BaseTestCase(TestCase):
@@ -24,9 +23,6 @@ class BaseTestCase(TestCase):
         # set path
         current_path = os.path.dirname(os.path.abspath(__file__))
         cls.test_data_path = os.path.join(current_path, 'data')
-
-        # download data model
-        download('en')
 
     @classmethod
     def teardown_class(cls):

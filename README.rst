@@ -94,14 +94,25 @@ Train
 
 To train the SpaCy model:
 
+.. code-block:: bash
+
+    # ensure data model
+    spacy download en
+
+    # download example data
+    wget https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx
+
 .. code-block:: python
 
+    import os
+    import tempfile
+    import spacy
     from excelcy import ExcelCy
 
     excelcy = ExcelCy()
-    excelcy.train(data_path='data_01.xlsx')
+    excelcy.train(data_path='test_data_28.xlsx')
 
-Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx>`__
+Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx>`__
 
 Test the training manually:
 
@@ -234,6 +245,7 @@ TODO
     - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add list of patterns easily (such as kitten breed)
+
 - [ ] Improve speed and performance
 - [ ] Create data standard
 - [ ] 100% coverage target with branch on
@@ -246,8 +258,3 @@ Acknowledgement
 This project uses other awesome projects:
 
 - `spaCy <https://github.com/explosion/spaCy>`__
-
-Maintainers
------------
-
-Maintained by: Robertus Johansyah

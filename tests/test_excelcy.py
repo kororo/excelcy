@@ -102,3 +102,10 @@ class TestExcelCy(BaseTestCase):
 
         # this shows current model in test_data_01, has "Uber" identified as ORG
         assert ents == {('Uber', 'ORG'), ('$1 million', 'MONEY')}
+
+    def test_readme_simple(self):
+        from excelcy import ExcelCy
+
+        test_path = self.get_test_data_path('test_data_28.xlsx')
+        excelcy = ExcelCy()
+        excelcy.train(data_path=test_path)

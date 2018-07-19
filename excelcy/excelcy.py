@@ -126,8 +126,9 @@ class DataTrainer(object):
 
         :return: NLP object
         """
-        name = self.data_config.get('name', '').replace('[tmp]', tempfile.gettempdir())
-        base = self.data_config.get('base').replace('[tmp]', tempfile.gettempdir())
+        tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
+        name = self.data_config.get('name', '').replace('[tmp]', tmp_path)
+        base = self.data_config.get('base').replace('[tmp]', tmp_path)
         base_path = os.path.dirname(self.data_path)
         self.nlp_path = os.path.join(base_path, name)
         # ensure path is exist

@@ -1,2 +1,4 @@
 coverage
 pytest
+coveralls
+tox-travis
