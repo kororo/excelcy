@@ -110,6 +110,7 @@ Test the training manually:
 
     import os
     import spacy
+    import tempfile
     from excelcy import ExcelCy
 
     # create nlp data model based on "en_core_web_sm" and save it to "test_data_01"
@@ -117,8 +118,9 @@ Test the training manually:
     nlp = spacy.load(base)
 
     # save and reload to verify
-    name = 'nlp/test_data_01'
+
     # create dir nlp
+    name = os.path.join(tempfile.gettempdir(), 'nlp/test_data_01')
     os.makedirs(name, exist_ok=True)
     # save it
     nlp.to_disk(name)
@@ -130,14 +132,14 @@ Test the training manually:
     ents = set([(ent.text, ent.label_) for ent in doc.ents])
 
     # this shows current model in test_data_01, has no "Uber" identified as ORG
-    # ents = {('$1 million', 'MONEY')}
+    assert ents == {('$1 million', 'MONEY')}
 
     # lets train
     excelcy = ExcelCy()
     # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
     # ensure name is "nlp/test_data_01" inside config sheet.
     # ensure directory data model "nlp/test_data_01" is created and exist.
-    excelcy.train(data_path='test_data_01.xlsx')
+    excelcy.train(data_path='tests/data/test_data_01.xlsx')
 
     # reload the data model
     nlp = spacy.load(name)
@@ -147,7 +149,7 @@ Test the training manually:
     ents = set([(ent.text, ent.label_) for ent in doc.ents])
 
     # this shows current model in test_data_01, has "Uber" identified as ORG
-    # ents = {('Uber', 'ORG'), ('$1 million', 'MONEY')}
+    assert ents == {('Uber', 'ORG'), ('$1 million', 'MONEY')}
 
 Data
 ----

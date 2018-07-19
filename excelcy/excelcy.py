@@ -145,11 +145,6 @@ class DataTrainer(object):
             nlp = spacy.load(name=base)
             nlp.to_disk(self.nlp_path)
             nlp = spacy.load(name=self.nlp_path)
-
-        # ensure ner pipe exists
-        if 'ner' not in nlp.pipe_names:
-            ner = nlp.create_pipe('ner')
-            nlp.add_pipe(ner)
         return nlp
 
     def reset(self):
@@ -166,6 +161,7 @@ class DataTrainer(object):
 
         :param data_path: Excel in XLSX path
         """
+        # self.reset()
         self.data_path = data_path
         # parse data
         wb = utils.load_excel(data_path=data_path)
@@ -223,7 +219,7 @@ class DataTrainer(object):
             rows = data_instance['rows']
             for row_id, r in rows.items():
                 # TODO: refactor this
-                row = [row_id, '', '']
+                row = [row_id, '']
                 for key in ['subtext', 'span', 'entity', 'tag']:
                     row.append(r.get(key))
                 sheets['train'].append(row)

@@ -1,34 +1,14 @@
-import os
-
-import spacy
 from excelcy import ExcelCy, DataTrainer
 from tests.test_base import BaseTestCase
 
 
-class TestDataTrainer(BaseTestCase):
+class TestExcelCy(BaseTestCase):
     def test_clean(self):
         # test: test the clean process
         test_path = self.get_test_data_path('test_data_01.xlsx')
         excelcy = ExcelCy()
         excelcy.train(data_path=test_path, options={'clean': True})
         excelcy.train(data_path=test_path, options={'clean': True})
-
-    def test_missing_ner_pipe(self):
-        base = 'en_core_web_sm'
-        nlp = spacy.load(base)
-        # lets remove ner to simulate
-        nlp.remove_pipe('ner')
-
-        # save and reload to verify
-        name = 'nlp/test_data_01'
-        # create dir nlp
-        os.makedirs(name, exist_ok=True)
-        # save it
-        nlp.to_disk(name)
-
-        # lets try it
-        test_path = self.get_test_data_path('test_data_01.xlsx')
-        self.assert_ents(data_path=test_path)
 
     def test_train_basic(self):
         # test: train with single row
@@ -68,16 +48,57 @@ class TestDataTrainer(BaseTestCase):
         test_path = self.get_test_data_path('test_data_01.xlsx')
         data_trainer = DataTrainer(data_path=test_path)
 
-        # prepare the dir
-        nlp_path = self.get_test_data_path('nlp/nlp')
-        os.makedirs(nlp_path, exist_ok=True)
         # re-create the data
-        test_path2 = self.get_test_data_path('nlp/test_data_01.xlsx')
-        data_trainer.data_save(test_path2)
+        data_path = self.get_test_dir_path('test_data_01.xlsx')
+        data_trainer.data_save(data_path)
 
         # reload it again
-        data_trainer2 = DataTrainer(data_path=test_path2)
+        data_trainer2 = DataTrainer(data_path=data_path)
 
         # and compare them, it should be exact the same
         assert data_trainer.data_train == data_trainer2.data_train
         assert data_trainer.data_config == data_trainer2.data_config
+
+    def test_readme(self):
+        import os
+        import spacy
+        import tempfile
+        from excelcy import ExcelCy
+
+        # create nlp data model based on "en_core_web_sm" and save it to "test_data_01"
+        base = 'en_core_web_sm'
+        nlp = spacy.load(base)
+
+        # save and reload to verify
+
+        # create dir nlp
+        name = os.path.join(tempfile.gettempdir(), 'nlp/test_data_01')
+        os.makedirs(name, exist_ok=True)
+        # save it
+        nlp.to_disk(name)
+        nlp = spacy.load(name)
+
+        # test the NER
+        text = 'Uber blew through $1 million a week'
+        doc = nlp(text)
+        ents = set([(ent.text, ent.label_) for ent in doc.ents])
+
+        # this shows current model in test_data_01, has no "Uber" identified as ORG
+        assert ents == {('$1 million', 'MONEY')}
+
+        # lets train
+        excelcy = ExcelCy()
+        # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
+        # ensure name is "nlp/test_data_01" inside config sheet.
+        # ensure directory data model "nlp/test_data_01" is created and exist.
+        excelcy.train(data_path='tests/data/test_data_01.xlsx')
+
+        # reload the data model
+        nlp = spacy.load(name)
+
+        # test the NER
+        doc = nlp(text)
+        ents = set([(ent.text, ent.label_) for ent in doc.ents])
+
+        # this shows current model in test_data_01, has "Uber" identified as ORG
+        assert ents == {('Uber', 'ORG'), ('$1 million', 'MONEY')}

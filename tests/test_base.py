@@ -1,8 +1,8 @@
 import os
 import shutil
+import tempfile
 from unittest import TestCase
 from excelcy import DataTrainer
-from spacy.cli import download
 
 
 class BaseTestCase(TestCase):
@@ -24,16 +24,19 @@ class BaseTestCase(TestCase):
         current_path = os.path.dirname(os.path.abspath(__file__))
         cls.test_data_path = os.path.join(current_path, 'data')
 
-        # download the model
-        download('en')
-
     @classmethod
     def teardown_class(cls):
-        pass
+        nlp_path = cls.get_test_dir_path('nlp')
+        if os.path.exists(nlp_path) and os.path.isdir(nlp_path):
+            shutil.rmtree(nlp_path)
 
     @classmethod
     def get_test_data_path(cls, fs_path: str):
         return os.path.join(cls.test_data_path, fs_path)
+
+    @classmethod
+    def get_test_dir_path(cls, fs_path: str):
+        return os.path.join(tempfile.gettempdir(), fs_path)
 
     def assert_ents(self, data_path: str, train: bool = True, options: dict = None, tests: dict = None):
         data_trainer = DataTrainer(data_path=data_path, options=options)

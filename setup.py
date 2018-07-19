@@ -58,6 +58,6 @@ setup(
     ],
 
     install_requires=REQUIRES,
-    tests_require=['coverage', 'pytest'],
+    tests_require=['coverage', 'pytest', 'en-core-web-sm==2.0.0'],
     packages=find_packages(),
 )
