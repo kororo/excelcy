@@ -2,6 +2,7 @@ import os
 import random
 import re
 import shutil
+import tempfile
 import typing
 import spacy
 from spacy.language import Language
@@ -9,6 +10,7 @@ from spacy.matcher import PhraseMatcher, Matcher
 from spacy.tokens.doc import Doc
 from excelcy import utils
 from excelcy.utils import odict
+from excelcy.errors import Errors
 
 
 EXCELCY_MATCHER = 'excelcy-matcher'
@@ -63,19 +65,6 @@ class MatcherPipe(object):
             regex_flag = self.nlp.vocab.add_flag(lambda text: self.eval_regex(pattern=pattern, text=text))
             self.matcher.add(entity, None, [{regex_flag: True}])
 
-    def get_string_id(self, match_id: int):
-        """
-        Get string ID based on match ID.
-        Example:
-        - String ID: PRODUCT
-        - Match ID: 123
-
-        :param match_id: The match ID
-        :return: The string ID
-        """
-        string_id = self.nlp.vocab.strings[match_id]
-        return string_id
-
     def eval_regex(self, pattern, text):
         return bool(re.compile(pattern).match(text))
 
@@ -119,7 +108,8 @@ class DataTrainer(object):
 
         # nlp model path
         self.nlp_path = None
-        self.data_path = data_path
+        self.data_init = False
+        self.data_path = None
         self.data_train = odict()  # type: typing.Dict[str, odict]
         self.data_pipes = odict()
         self.data_config = odict()
@@ -136,10 +126,12 @@ class DataTrainer(object):
 
         :return: NLP object
         """
-        name = self.data_config.get('name')
-        base = self.data_config.get('base')
+        name = self.data_config.get('name', '').replace('[tmp]', tempfile.gettempdir())
+        base = self.data_config.get('base').replace('[tmp]', tempfile.gettempdir())
         base_path = os.path.dirname(self.data_path)
         self.nlp_path = os.path.join(base_path, name)
+        # ensure path is exist
+        os.makedirs(self.nlp_path, exist_ok=True)
 
         # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from SpaCy
         try:
@@ -154,14 +146,19 @@ class DataTrainer(object):
             nlp.to_disk(self.nlp_path)
             nlp = spacy.load(name=self.nlp_path)
 
-        # ensure path is exist
-        os.makedirs(self.nlp_path, exist_ok=True)
-
         # ensure ner pipe exists
         if 'ner' not in nlp.pipe_names:
             ner = nlp.create_pipe('ner')
             nlp.add_pipe(ner)
         return nlp
+
+    def reset(self):
+        self.nlp_path = None
+        self.data_path = None
+        self.data_train = odict()  # type: typing.Dict[str, odict]
+        self.data_pipes = odict()
+        self.data_config = odict()
+        self.nlp = None
 
     def data_load(self, data_path: str):
         """
@@ -169,6 +166,7 @@ class DataTrainer(object):
 
         :param data_path: Excel in XLSX path
         """
+        self.data_path = data_path
         # parse data
         wb = utils.load_excel(data_path=data_path)
         # parse config
@@ -184,7 +182,7 @@ class DataTrainer(object):
             if token_id is None:
                 data_instance = odict()
                 data_instance['text'] = row.get('text')
-                data_instance['rows'] = []
+                data_instance['rows'] = odict()
                 data_instance['gold'] = odict()
                 data_instance['gold']['entities'] = []
                 self.data_train[row_id] = data_instance
@@ -198,18 +196,19 @@ class DataTrainer(object):
                     else:
                         start = text.find(subtext)
                         end = start + len(subtext)
-                    parent_row['rows'].append(row)
+                    parent_row['rows'][row.get('id')] = row
                     ent = [int(start), int(end), entity]
                     parent_row['gold']['entities'].append(ent)
         # parse pipe-matcher
         self.data_pipes['matcher'] = self.data_pipes.get('matcher', [])
         for matcher in wb.get('pipe-matcher', []):
             self.data_pipes['matcher'].append(matcher)
+        self.data_init = True
 
     def data_save(self, data_path: str):
         sheets = odict()
         # TODO: refactor this
-        sheets['train'] = [['id', 'text', 'config', 'subtext', 'span', 'entity', 'tag']]
+        sheets['train'] = [['id', 'text', 'subtext', 'span', 'entity', 'tag']]
         sheets['config'] = [['name', 'value']]
 
         # build config sheet
@@ -221,15 +220,13 @@ class DataTrainer(object):
             row = [train_id, data_instance.get('text'), '']
             sheets['train'].append(row)
 
-            tokens = data_instance['tokens']
-            # check if there is tokens
-            if tokens:
-                for token_id, token in tokens.items():
-                    row = [token_id, '', '']
-                    # TODO: refactor this
-                    for key in ['subtext', 'span', 'entity', 'tag']:
-                        row.append(token.get(key))
-                    sheets['train'].append(row)
+            rows = data_instance['rows']
+            for row_id, r in rows.items():
+                # TODO: refactor this
+                row = [row_id, '', '']
+                for key in ['subtext', 'span', 'entity', 'tag']:
+                    row.append(r.get(key))
+                sheets['train'].append(row)
         utils.save_excel(sheets=sheets, data_path=data_path)
 
     def _add_entities(self, ner):
@@ -247,7 +244,7 @@ class DataTrainer(object):
         for entity in set(entities):
             ner.add_label(entity)
 
-    def train_matcher(self, auto_save: bool = True):
+    def _train_matcher(self):
         # add matcher pipe
         nlp = self.nlp
         nlp.add_pipe(MatcherPipe(nlp, self.data_pipes['matcher']))
@@ -259,13 +256,14 @@ class DataTrainer(object):
             for ent in doc.ents:
                 subtext, start, end, label = ent.text, ent.start_char, ent.end_char, ent.label_
                 entity = [int(start), int(end), label]
-                data_instance['gold']['entities'].append(entity)
-
-        # save
-        if auto_save and False:
-            self.data_save(data_path=self.data_path)
+                # insert at the begining so it is possible to be overriden
+                data_instance['gold']['entities'].insert(0, entity)
 
     def train(self, auto_save: bool = True):
+        if not self.data_init:
+            # ensure data loaded
+            raise ValueError(Errors.E001)
+
         # prepare nlp
         nlp = self.nlp
         ner = nlp.get_pipe('ner')
@@ -279,7 +277,7 @@ class DataTrainer(object):
 
         if train_matcher is True:
             # been told to auto add Entity based on the rule based matching
-            self.train_matcher(auto_save=auto_save)
+            self._train_matcher()
 
         # prepare data
         data_train_key = list(self.data_train.keys())
@@ -314,7 +312,8 @@ class DataTrainer(object):
 
         # save
         if auto_save:
-            nlp.remove_pipe(EXCELCY_MATCHER)
+            if EXCELCY_MATCHER in nlp.pipe_names:
+                nlp.remove_pipe(EXCELCY_MATCHER)
             nlp.to_disk(self.nlp_path)
 
 

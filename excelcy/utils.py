@@ -34,3 +34,12 @@ def load_excel(data_path):
 
 def save_excel(sheets, data_path):
     pyexcel.save_book_as(bookdict=sheets, dest_file_name=data_path)
+
+
+def add_attr(cls):
+    class AttributedProperty(object):
+        def __getattribute__(self, code):
+            msg = getattr(err_cls, code)
+            return '[{code}] {msg}'.format(code=code, msg=msg)
+
+    return ErrorsWithCodes()
