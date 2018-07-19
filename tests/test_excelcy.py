@@ -119,4 +119,4 @@ class TestExcelCy(BaseTestCase):
             data_trainer = DataTrainer(data_path=test_path)
             data_trainer.reset()
             data_trainer.train()
-        assert excinfo.value == errors.Errors.E001
+        assert str(excinfo.value) == errors.Errors.E001
