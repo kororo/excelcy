@@ -1,4 +1,5 @@
-from excelcy import ExcelCy, DataTrainer
+import pytest
+from excelcy import ExcelCy, DataTrainer, errors
 from tests.test_base import BaseTestCase
 
 
@@ -72,7 +73,8 @@ class TestExcelCy(BaseTestCase):
         # save and reload to verify
 
         # create dir nlp
-        name = os.path.join(tempfile.gettempdir(), 'nlp/test_data_01')
+        tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
+        name = os.path.join(tmp_path, 'nlp/test_data_01')
         os.makedirs(name, exist_ok=True)
         # save it
         nlp.to_disk(name)
@@ -91,7 +93,8 @@ class TestExcelCy(BaseTestCase):
         # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
         # ensure name is "nlp/test_data_01" inside config sheet.
         # ensure directory data model "nlp/test_data_01" is created and exist.
-        excelcy.train(data_path='tests/data/test_data_01.xlsx')
+        test_path = self.get_test_data_path('test_data_01.xlsx')
+        excelcy.train(data_path=test_path)
 
         # reload the data model
         nlp = spacy.load(name)
@@ -102,3 +105,18 @@ class TestExcelCy(BaseTestCase):
 
         # this shows current model in test_data_01, has "Uber" identified as ORG
         assert ents == {('Uber', 'ORG'), ('$1 million', 'MONEY')}
+
+    def test_readme_simple(self):
+        from excelcy import ExcelCy
+
+        test_path = self.get_test_data_path('test_data_28.xlsx')
+        excelcy = ExcelCy()
+        excelcy.train(data_path=test_path)
+
+    def test_init_errors(self):
+        with pytest.raises(ValueError) as excinfo:
+            test_path = self.get_test_data_path('test_data_28.xlsx')
+            data_trainer = DataTrainer(data_path=test_path)
+            data_trainer.reset()
+            data_trainer.train()
+        assert str(excinfo.value) == errors.Errors.E001

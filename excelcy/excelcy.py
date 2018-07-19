@@ -126,12 +126,13 @@ class DataTrainer(object):
 
         :return: NLP object
         """
-        name = self.data_config.get('name', '').replace('[tmp]', tempfile.gettempdir())
-        base = self.data_config.get('base').replace('[tmp]', tempfile.gettempdir())
+        tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
+        name = self.data_config.get('name', '').replace('[tmp]', tmp_path)
+        base = self.data_config.get('base').replace('[tmp]', tmp_path)
         base_path = os.path.dirname(self.data_path)
         self.nlp_path = os.path.join(base_path, name)
         # ensure path is exist
-        os.makedirs(self.nlp_path, exist_ok=True)
+        os.makedirs(os.path.dirname(self.nlp_path), exist_ok=True)
 
         # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from SpaCy
         try:
@@ -149,6 +150,7 @@ class DataTrainer(object):
 
     def reset(self):
         self.nlp_path = None
+        self.data_init = False
         self.data_path = None
         self.data_train = odict()  # type: typing.Dict[str, odict]
         self.data_pipes = odict()
@@ -161,7 +163,7 @@ class DataTrainer(object):
 
         :param data_path: Excel in XLSX path
         """
-        # self.reset()
+        self.reset()
         self.data_path = data_path
         # parse data
         wb = utils.load_excel(data_path=data_path)

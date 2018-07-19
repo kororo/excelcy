@@ -14,11 +14,8 @@ ExcelCy
     :target: https://gitter.im/kororo-excelcy
     :alt: Gitter
 
-ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
-It has helper to pre-train entity annotation with phrase and regex matcher pipe.
-
-.. contents:: **Table of Contents**
-    :backlinks: none
+    ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
+    It has helper to pre-train entity annotation with phrase and regex matcher pipe.
 
 ExcelCy is Powerful
 -------------------
@@ -97,12 +94,25 @@ Train
 
 To train the SpaCy model:
 
+.. code-block:: bash
+
+    # ensure data model
+    spacy download en
+
+    # download example data
+    wget https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx
+
 .. code-block:: python
 
+    import os
+    import tempfile
+    import spacy
     from excelcy import ExcelCy
 
     excelcy = ExcelCy()
-    excelcy.train(data_path='data_01.xlsx')
+    excelcy.train(data_path='test_data_28.xlsx')
+
+Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx>`__
 
 Test the training manually:
 
@@ -162,9 +172,7 @@ Sheet: config
 Extra configuration for the training.
 
 - base: The initial SpaCy data model to begin with. Described in `here <https://spacy.io/models/>`__
-- name: The absolute/relative path to save the SpaCy data model after training.
-        It is possible to use this to read existing data model and training on top existing one.
-        The path always relative to file.
+- name: The absolute/relative path to save the SpaCy data model after training. It is possible to use this to read existing data model and training on top existing one. The path always relative to file.
 - train.iteration: How many iteration to train described `here <https://spacy.io/usage/training#annotations>`__
 - train.drop: How much to dropout rate based on `here <https://spacy.io/usage/training#tips-dropout>`__
 - train.matcher: Enable to add entity annotation based on pipe-matcher, described below.
@@ -224,7 +232,9 @@ TODO
 ----
 
 - [X] Start get cracking into spaCy
+
 - [ ] More features
+
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [ ] Add custom tags.
@@ -235,6 +245,7 @@ TODO
     - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add list of patterns easily (such as kitten breed)
+
 - [ ] Improve speed and performance
 - [ ] Create data standard
 - [ ] 100% coverage target with branch on

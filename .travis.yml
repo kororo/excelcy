@@ -1,0 +1,13 @@
+sudo: true
+language: python
+env:
+  EXCELCY_TEMP_PATH=${TRAVIS_BUILD_DIR}
+python:
+  - 3.6
+install:
+ - pip install -r requirements.txt
+ - pip install -r requirements-test.txt
+script:
+ - tox
+after_success:
+ - coveralls
