@@ -10,12 +10,12 @@ ExcelCy
 .. image:: https://coveralls.io/repos/github/kororo/excelcy/badge.svg?branch=master
     :target: https://coveralls.io/github/kororo/excelcy?branch=master
 
-.. image:: https://badges.gitter.im/kororo-excelcy.png
-    :target: https://gitter.im/kororo-excelcy
+.. image:: https://badges.gitter.im/excelcy.png
+    :target: https://gitter.im/excelcy
     :alt: Gitter
 
-    ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
-    It has helper to pre-train entity annotation with phrase and regex matcher pipe.
+ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
+It has helper to pre-train entity annotation with phrase and regex matcher pipe.
 
 ExcelCy is Powerful
 -------------------

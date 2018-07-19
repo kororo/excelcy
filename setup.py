@@ -23,28 +23,23 @@ with open('excelcy/__init__.py', 'r') as f:
             version = line.strip().split('=')[1].strip(' \'"')
             break
 
-with open('README.rst', 'r', encoding='utf-8') as f:
-    readme = f.read()
-
 pkg = 'excelcy'
 REQUIRES = [str(ir.req) for ir in get_requirements('requirements.txt') if ir.req]
 
 setup(
     name=pkg,
     version=version,
-    description='',
-    long_description=readme,
+    description='Excel Integration with SpaCy. Includes, Entity training, Entity matcher pipe.',
+    long_description=open('README.rst', 'r').read(),
     author='Robertus Johansyah',
     author_email='me@kororo.co',
     maintainer='Robertus Johansyah',
     maintainer_email='me@kororo.co',
     url='https://github.com/_/excelcy',
     license='MIT',
-
     keywords=[
-        '',
+        'spacy', 'spacy-pipeline', 'spacy-nlp', 'nlp', 'excel', 'xlsx'
     ],
-
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -56,8 +51,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-
     install_requires=REQUIRES,
-    tests_require=['coverage', 'pytest', 'en-core-web-sm==2.0.0'],
+    tests_require=['coverage', 'pytest'],
     packages=find_packages(),
 )
