@@ -12,3 +12,4 @@ wheelhouse/
 tests/data/nlp_test
 .tox
 *\.coverage\.*
+dist/
