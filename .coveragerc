@@ -2,11 +2,14 @@
 source =
     excelcy
     tests
-branch = True
-omit =
+branch = False
+omit = setup.py
     excelcy/cli.py
+    .tox/*
+    /home/travis/virtualenv/*
 
 [report]
+show_missing = True
 exclude_lines =
     no cov
     no qa

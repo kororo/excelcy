@@ -1,4 +1,3 @@
-*.log
 *.pyc
 .cache/
 .coverage
@@ -6,9 +5,10 @@
 .vscode/
 excelcy.egg-info/
 build/
-dist/
 docs/build/
 venv/
 wheelhouse/
 .pytest_cache
 tests/data/nlp_test
+.tox
+*\.coverage\.*
