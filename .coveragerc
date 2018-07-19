@@ -1,0 +1,18 @@
+[run]
+source =
+    excelcy
+    tests
+branch = False
+omit = setup.py
+    excelcy/cli.py
+    .tox/*
+    /home/travis/virtualenv/*
+
+[report]
+show_missing = True
+exclude_lines =
+    no cov
+    no qa
+    noqa
+    pragma: no cover
+    if __name__ == .__main__.:
