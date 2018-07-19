@@ -1,3 +1,2 @@
 coverage
 pytest
-en-core-web-sm
