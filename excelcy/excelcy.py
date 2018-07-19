@@ -150,6 +150,7 @@ class DataTrainer(object):
 
     def reset(self):
         self.nlp_path = None
+        self.data_init = False
         self.data_path = None
         self.data_train = odict()  # type: typing.Dict[str, odict]
         self.data_pipes = odict()
@@ -162,7 +163,7 @@ class DataTrainer(object):
 
         :param data_path: Excel in XLSX path
         """
-        # self.reset()
+        self.reset()
         self.data_path = data_path
         # parse data
         wb = utils.load_excel(data_path=data_path)
