@@ -131,7 +131,7 @@ class DataTrainer(object):
         base_path = os.path.dirname(self.data_path)
         self.nlp_path = os.path.join(base_path, name)
         # ensure path is exist
-        os.makedirs(self.nlp_path, exist_ok=True)
+        os.makedirs(os.path.dirname(self.nlp_path), exist_ok=True)
 
         # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from SpaCy
         try:

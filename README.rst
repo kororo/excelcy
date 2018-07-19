@@ -246,3 +246,8 @@ Acknowledgement
 This project uses other awesome projects:
 
 - `spaCy <https://github.com/explosion/spaCy>`__
+
+Maintainers
+-----------
+
+Maintained by: Robertus Johansyah
