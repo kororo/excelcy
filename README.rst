@@ -17,11 +17,14 @@ ExcelCy
 ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
 It has helper to pre-train entity annotation with phrase and regex matcher pipe.
 
+.. contents:: **Table of Contents**
+    :backlinks: none
+
 ExcelCy is Powerful
 -------------------
 
 ExcelCy focuses on the needs of training data into spaCy data model. Illustration below is based on the documentation in
-`Simple Style Training <https://spacy.io/usage/training#training-simple-style>`_.
+`Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
 
 .. code-block:: python
 
@@ -38,11 +41,11 @@ ExcelCy focuses on the needs of training data into spaCy data model. Illustratio
     nlp.to_disk('/model')
 
 The **TRAIN_DATA**, describes list of text sentences including the annotated entities to be trained. It is cumbersome
-to always count the characters. With ExcelCy, start,end characters can be ommited.
+to always count the characters. With ExcelCy, start,end characters can be omitted.
 
 .. code-block:: python
 
-    # this is illustration presentation only, pleaes use Excel for now which desribed below.
+    # this is illustration presentation only, please use Excel for now which described below.
     self.data_train = {
         '1.0': {
             'text': 'Uber blew through $1 million a week',
@@ -56,7 +59,7 @@ to automatically add the annotation Entity using pipe-matcher either exact match
 
 .. code-block:: python
 
-    # this is illustration presentation only, pleaes use Excel for now which desribed below.
+    # this is illustration presentation only, please use Excel for now which desribed below.
     self.data_train = {
         '1.0': {
             'text': 'Uber blew through $1 million a week',
@@ -73,17 +76,9 @@ Features
 - Add training data from Excel.
 - Add custom Entity labels.
 - Annotate Entity from given sentences without (start, end) char position.
-- Rule based phrase matching using `PhraseMatcher <https://spacy.io/usage/linguistic-features#adding-phrase-patterns>`_
-- Rule based matching using `regex + Matcher <https://spacy.io/usage/linguistic-features#regex>`_
+- Rule based phrase matching using `PhraseMatcher <https://spacy.io/usage/linguistic-features#adding-phrase-patterns>`__
+- Rule based matching using `regex + Matcher <https://spacy.io/usage/linguistic-features#regex>`__
 - Add Entity training data using pipe matcher described above.
-
------
-
-.. contents:: **Table of Contents**
-    :backlinks: none
-
------
-
 
 Install
 -------
@@ -164,20 +159,20 @@ Sheet: config
 
 Extra configuration for the training.
 
-- base: The initial SpaCy data model to begin with. Described in `here <https://spacy.io/models/>`_
+- base: The initial SpaCy data model to begin with. Described in `here <https://spacy.io/models/>`__
 - name: The absolute/relative path to save the SpaCy data model after training.
         It is possible to use this to read existing data model and training on top existing one.
         The path always relative to file.
-- train.iteration: How many iteration to train described `here <https://spacy.io/usage/training#annotations>`_
-- train.drop: How much to dropout rate based on `here <https://spacy.io/usage/training#tips-dropout>`_
+- train.iteration: How many iteration to train described `here <https://spacy.io/usage/training#annotations>`__
+- train.drop: How much to dropout rate based on `here <https://spacy.io/usage/training#tips-dropout>`__
 - train.matcher: Enable to add entity annotation based on pipe-matcher, described below.
 
 Sheet: train
 ^^^^^^^^^^^^
 
 List of text sentences to train. This includes list of subtext to annotate any identified Entity.
-Any non-existance Entity in nlp, it will automatically added using "ner" pipe, similar to
-`here <https://spacy.io/usage/training#example-new-entity-type>`_.
+Any non-existence Entity in nlp, it will automatically added using "ner" pipe, similar to
+`here <https://spacy.io/usage/training#example-new-entity-type>`__.
 
 - id: It follow format of "TEXT_ID.SUBTEXT_ID"
 - text: The text sentence to train
@@ -193,15 +188,15 @@ Any non-existance Entity in nlp, it will automatically added using "ner" pipe, s
 
 **Examples:**
 
-- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx>`_
-- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_02.xlsx>`_
-- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_03.xlsx>`_
-- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_04.xlsx>`_
+- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx>`__
+- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_02.xlsx>`__
+- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_03.xlsx>`__
+- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_04.xlsx>`__
 
 Sheet: pipe-matcher
 ^^^^^^^^^^^^^^^^^^^
 
-This list helps if there are lots of subtext occurence in "train" sheet.
+This list helps if there are lots of subtext occurrence in "train" sheet.
 
 If type is "nlp":
 
@@ -226,21 +221,21 @@ If type is "regex":
 TODO
 ----
 
+- [X] Start get cracking into spaCy
 - [ ] More features
-
-    - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`_
+    - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [ ] Add custom tags.
     - [ ] Add report outputs such as identified entity, tag
     - [ ] Add support to accept sentences to Excel
     - [ ] Add more data structure check in Excel and more warning messages
-    - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`_
-    - [ ] Add exception subtext when there is multiple occurence in text. (Google Pay is awesome Google product)
+    - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`__
+    - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add list of patterns easily (such as kitten breed)
-
 - [ ] Improve speed and performance
 - [ ] Create data standard
+- [ ] 100% coverage target with branch on
 - [ ] Submit to Prodigy Universe
 
 
@@ -249,4 +244,4 @@ Acknowledgement
 
 This project uses other awesome projects:
 
-- `spaCy <https://github.com/explosion/spaCy>`_
+- `spaCy <https://github.com/explosion/spaCy>`__
