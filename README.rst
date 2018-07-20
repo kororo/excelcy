@@ -95,7 +95,7 @@ To train the SpaCy model:
     spacy download en
 
     # download example data
-    wget https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx
+    wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_28.xlsx
 
 .. code-block:: python
 
@@ -107,7 +107,7 @@ To train the SpaCy model:
     excelcy = ExcelCy()
     excelcy.train(data_path='test_data_28.xlsx')
 
-Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx>`__
+Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_28.xlsx>`__
 
 Test the training manually:
 
@@ -141,7 +141,7 @@ Test the training manually:
 
     # lets train
     excelcy = ExcelCy()
-    # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
+    # copy excel from https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx
     # ensure name is "nlp/test_data_01" inside config sheet.
     # ensure directory data model "nlp/test_data_01" is created and exist.
     excelcy.train(data_path='tests/data/test_data_01.xlsx')
@@ -193,10 +193,10 @@ Any non-existence Entity in nlp, it will automatically added using "ner" pipe, s
 
 **Examples:**
 
-- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx>`__
-- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_02.xlsx>`__
-- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_03.xlsx>`__
-- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_04.xlsx>`__
+- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
+- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_02.xlsx>`__
+- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_03.xlsx>`__
+- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_04.xlsx>`__
 
 Sheet: pipe-matcher
 ^^^^^^^^^^^^^^^^^^^
