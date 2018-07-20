@@ -57,15 +57,10 @@ to automatically add the annotation Entity using pipe-matcher either exact match
 .. code-block:: python
 
     # this is illustration presentation only, please use Excel for now which desribed below.
-    self.data_train = {
-        '1.0': {
-            'text': 'Uber blew through $1 million a week',
-            'rows': [{'subtext': 'Uber', 'entity': 'ORG'}]
-        }
-    }
-
-
-
+    self.data_pipes['matcher'] = [
+        {'pattern': 'Uber', 'type': 'nlp', 'entity': 'ORG'},
+        {'pattern': '[a|an|\d+] week?', 'type': 'regex', 'entity': 'TIME'}
+    ]
 
 Features
 --------
@@ -100,7 +95,7 @@ To train the SpaCy model:
     spacy download en
 
     # download example data
-    wget https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx
+    wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_28.xlsx
 
 .. code-block:: python
 
@@ -112,7 +107,7 @@ To train the SpaCy model:
     excelcy = ExcelCy()
     excelcy.train(data_path='test_data_28.xlsx')
 
-Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_28.xlsx>`__
+Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_28.xlsx>`__
 
 Test the training manually:
 
@@ -146,7 +141,7 @@ Test the training manually:
 
     # lets train
     excelcy = ExcelCy()
-    # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
+    # copy excel from https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx
     # ensure name is "nlp/test_data_01" inside config sheet.
     # ensure directory data model "nlp/test_data_01" is created and exist.
     excelcy.train(data_path='tests/data/test_data_01.xlsx')
@@ -198,10 +193,10 @@ Any non-existence Entity in nlp, it will automatically added using "ner" pipe, s
 
 **Examples:**
 
-- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx>`__
-- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_02.xlsx>`__
-- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_03.xlsx>`__
-- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_04.xlsx>`__
+- `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
+- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_02.xlsx>`__
+- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_03.xlsx>`__
+- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_04.xlsx>`__
 
 Sheet: pipe-matcher
 ^^^^^^^^^^^^^^^^^^^
@@ -233,10 +228,11 @@ TODO
 
 - [X] Start get cracking into spaCy
 
-- [ ] More features
+- [ ] More features and enhancements listed `here <https://github.com/kororo/excelcy/labels/enhancement>`__
 
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/2>`__] Improve experience
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/1>`__] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
-    - [ ] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [ ] Add custom tags.
     - [ ] Add report outputs such as identified entity, tag
     - [ ] Add support to accept sentences to Excel
@@ -247,9 +243,8 @@ TODO
     - [ ] Add list of patterns easily (such as kitten breed)
 
 - [ ] Improve speed and performance
-- [ ] Create data standard
-- [ ] 100% coverage target with branch on
-- [ ] Submit to Prodigy Universe
+- [ ] 100% coverage target with config (branch=on)
+- [X] Submit to Prodigy Universe
 
 
 Acknowledgement
@@ -258,3 +253,4 @@ Acknowledgement
 This project uses other awesome projects:
 
 - `spaCy <https://github.com/explosion/spaCy>`__
+- `pyexcel <https://github.com/pyexcel/pyexcel>`__
