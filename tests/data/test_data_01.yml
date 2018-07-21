@@ -1,0 +1,66 @@
+# The data structure for ExcelCy.
+
+# Main configuration for the training.
+config:
+  # The initial spaCy data model to begin with. Described in https://spacy.io/models/
+  nlp_base: en_core_web_sm
+  # The absolute/relative path to save the SpaCy data model after training.
+  # It is possible to use this to read existing data model and training on top existing one.
+  #
+  # Example:
+  # 1. /data/test-data: Value is absolute path, ExcelCy will automatically ensure "/data" exists
+  # 2. test-data: Value is relative, it is always relative to this file directory path.
+  # 3. [tmp]/test-data: Value contains [tmp], it always be replaced by either env variable EXCELCY_TEMP_PATH or
+  #                     python tempfile.gettempdir() output
+  nlp_name: /data/test-data
+  source_language: en
+  prepare_enabled: true
+  train_iteration: 2
+  train_drop: 0.2
+source:
+  items:
+    '0':
+      idx: '0'
+      kind: text
+      value: Uber blew through $1 million a week. Android Pay expands to Canada.
+    '1':
+      idx: '1'
+      kind: textract
+      # this is the source path
+      value: source/test_source_01.txt
+# extra pipelines to do pre-train Entity identification
+prepare:
+  items:
+    '0':
+      idx: '0'
+      kind: phrase
+      value: google
+      entity: PRODUCT
+    '1':
+      idx: '1'
+      kind: regex
+      value: Uber?
+      entity: ORG
+train:
+  items:
+    '0':
+      idx: '0'
+      text: Uber blew through $1 million a week.
+      items:
+        '0.0':
+          idx: '0.0'
+          subtext: Uber
+          entity: ORG
+        '0.1':
+          idx: '0.1'
+          subtext: $1 million
+          entity: MONEY
+    '1':
+      idx: '1'
+      text: Android Pay expands to Canada.
+      items:
+        '1.0':
+          idx: '1.2'
+          subtext: Android Pay
+          span: [0, 11]
+          entity: PRODUCT

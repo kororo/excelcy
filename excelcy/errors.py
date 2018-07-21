@@ -13,4 +13,4 @@ def add_codes(err_cls):
 @add_codes
 class Errors:
     """ List of identified error """
-    E001 = 'Data is not loaded. Please run data_load first before.'
+    E001 = 'Error on loading data configuration file.'
