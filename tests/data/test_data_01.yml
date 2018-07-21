@@ -1,0 +1,74 @@
+config:
+  nlp_base: en_core_web_sm
+  nlp_name: '[tmp]/nlp/test_data_04'
+  source_language: en
+  prepare_enabled: true
+  train_iteration: 2
+  train_drop: 0.2
+prepare:
+  items:
+    '0':
+      idx: '0'
+      kind: phrase
+      value: google
+      entity: PRODUCT
+    '1':
+      idx: '1'
+      kind: regex
+      value: Uber?
+      entity: ORG
+    '2':
+      idx: '2'
+      kind: index
+      value: $1 million
+      entity: TIME
+source:
+  items:
+    '0':
+      idx: '0'
+      kind: text
+      value: Uber blew through $1 million a week. Android Pay expands to Canada.
+    '1':
+      idx: '1'
+      kind: textract
+      value: source/test_source_01.txt
+train:
+  items:
+    '0':
+      idx: '0'
+      text: Uber blew through $1 million a week.
+      items:
+        '0.0':
+          idx: '0.0'
+          subtext: Uber
+          span: [0, 4]
+          entity: ORG
+        '0.1':
+          idx: '0.1'
+          subtext: $1 million
+          span: [18, 28]
+          entity: MONEY
+        '1.2':
+          idx: '1.2'
+          subtext: Android Pay
+          span: [0, 11]
+          entity: PRODUCT
+    '1':
+      idx: '1'
+      text: Android Pay expands to Canada.
+      items:
+        '0.0':
+          idx: '0.0'
+          subtext: Uber
+          span: [0, 4]
+          entity: ORG
+        '0.1':
+          idx: '0.1'
+          subtext: $1 million
+          span: [18, 28]
+          entity: MONEY
+        '1.2':
+          idx: '1.2'
+          subtext: Android Pay
+          span: [0, 11]
+          entity: PRODUCT
