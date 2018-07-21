@@ -39,10 +39,12 @@ class ExcelCy(object):
         self.storage.save(file_path=file_path)
         return self
 
-    def resolve_path(self, file_path: str):
-        tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
-        file_path = file_path.replace('[tmp]', tmp_path)
-        return os.path.join(self.storage.base_path, file_path)
+    def resolve_path(self, file_path: str = None):
+        if file_path:
+            tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
+            file_path = file_path.replace('[tmp]', tmp_path)
+            return os.path.join(self.storage.base_path, file_path)
+        return None
 
     def create_nlp(self):
         """
@@ -52,15 +54,14 @@ class ExcelCy(object):
         """
         # parse path and ensure exists
         self.storage.nlp_path = self.resolve_path(file_path=self.storage.config.nlp_name)
-        os.makedirs(os.path.dirname(self.storage.nlp_path), exist_ok=True)
+        if self.storage.nlp_path:
+            os.makedirs(os.path.dirname(self.storage.nlp_path), exist_ok=True)
 
         try:
             # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from spaCy.
             nlp = spacy.load(name=self.storage.nlp_path)
         except IOError:
             nlp = spacy.load(name=self.storage.config.nlp_base)
-            nlp.to_disk(self.storage.nlp_path)
-            nlp = spacy.load(name=self.storage.nlp_path)
         return nlp
 
     def _discover_text(self, source: Source):
@@ -114,13 +115,7 @@ class ExcelCy(object):
         self._prepare_init_base(prepare=prepare)
 
     def _prepare_parse(self, train: Train):
-        # parse existing
-        for _, gold in train.items.items():
-            if not gold.span:
-                offset = train.text.find(gold.subtext)
-                if offset != -1:
-                    gold.span = '%s,%s' % (offset, offset + len(gold.subtext))
-        # parse new
+        # parsing pre-identified Entity based on current data model
         doc = self.nlp(train.text)
         for ent in doc.ents:
             subtext, span, label = ent.text, '%s,%s' % (ent.start_char, ent.end_char), ent.label_
@@ -165,6 +160,11 @@ class ExcelCy(object):
         for idx, train in self.storage.train.items.items():
             trains[idx] = {'entities': []}
             for gold_idx, gold in train.items.items():
+                # ensure span is valid positions
+                if not gold.span:
+                    offset = train.text.find(gold.subtext)
+                    if offset != -1:
+                        gold.span = '%s,%s' % (offset, offset + len(gold.subtext))
                 span = gold.span.replace(' ', '').strip()
                 spans = span.split(',')
                 entities = [int(spans[0]), int(spans[1]), gold.entity]

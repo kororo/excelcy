@@ -1,4 +1,3 @@
-import yaml
 from excelcy import utils
 from excelcy.storage import Storage
 from tests.test_base import BaseTestCase

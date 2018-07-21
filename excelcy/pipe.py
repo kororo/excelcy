@@ -25,7 +25,7 @@ class MatcherPipe(object):
 
         Pattern examples:
         patterns = [
-            {'kind': 'nlp', 'value': 'amazon', 'entity': 'PRODUCT'},
+            {'kind': 'phrase', 'value': 'amazon', 'entity': 'PRODUCT'},
             {'kind': 'regex', 'value': 'ama(.+)', 'entity': 'PRODUCT'}
         ]
 
@@ -36,6 +36,7 @@ class MatcherPipe(object):
         self.phrase_matcher = PhraseMatcher(nlp.vocab)
         self.matcher = Matcher(nlp.vocab)
 
+        self.extra_patterns = []
         # start add pattern
         self.add_patterns(patterns=patterns or [])
 
@@ -52,14 +53,14 @@ class MatcherPipe(object):
     def add_pattern(self, kind: str, value, entity: str):
         """
         Add pattern into matcher algorithm. There are two different types:
-        - nlp: This uses PhraseMatcher which described in https://spacy.io/usage/linguistic-features#adding-phrase-patterns
+        - phrase: This uses PhraseMatcher which described in https://spacy.io/usage/linguistic-features#adding-phrase-patterns
         - regex: This uses Matcher which described in https://spacy.io/usage/linguistic-features#regex
 
-        :param kind: Pattern matcher type, either 'nlp', 'regex'
+        :param kind: Pattern matcher type, either 'phrase', 'regex'
         :param value: Entity pattern matcher
         :param entity: Entity to be matched
         """
-        if kind == 'nlp':
+        if kind == 'phrase':
             self.phrase_matcher.add(entity, None, *[self.nlp(value)])
         elif kind == 'regex':
             regex_flag = self.nlp.vocab.add_flag(lambda text: self.eval_regex(pattern=value, text=text))
@@ -83,6 +84,7 @@ class MatcherPipe(object):
             # start add them into entities list
             entity = (match_id, start, end)
             doc.ents += (entity,)
+
         return doc
 
 

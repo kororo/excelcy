@@ -17,7 +17,7 @@ class Config(Registry):
     prepare_enabled = field(True)  # type: bool
     train_iteration = field(None)  # type: int
     train_drop = field(None)  # type: float
-    train_autosave = field(True)  # type: bool
+    train_autosave = field(False)  # type: bool
 
 
 @attr.s()
@@ -83,7 +83,7 @@ class Train(Registry):
         super(Train, self).__attrs_post_init__()
         self.items = odict()
 
-    def add(self, subtext: str, span: str, entity: str, idx: str = None):
+    def add(self, subtext: str, entity: str, span: str = None, idx: str = None):
         idx = idx or '%s.%s' % (self.idx, len(self.items))
         item = Gold(subtext=subtext, span=span, entity=entity, idx=str(idx))
         self.items[str(idx)] = item

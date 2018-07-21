@@ -1,129 +1,55 @@
-import pytest
-from excelcy import ExcelCy, DataTrainer, errors
+from excelcy import ExcelCy
+from excelcy.storage import Config
 from tests.test_base import BaseTestCase
 
 
 class TestExcelCy(BaseTestCase):
-    def test_clean(self):
-        # test: test the clean process
-        test_path = self.get_test_data_path('test_data_01.xlsx')
+    def test_readme_01(self):
+        """ Test: code snippet found in README.rst """
         excelcy = ExcelCy()
-        excelcy.train(data_path=test_path, options={'clean': True})
-        excelcy.train(data_path=test_path, options={'clean': True})
+        excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+        train = excelcy.storage.train.add(text='Uber blew through $1 million a week')
+        train.add(subtext='Uber', entity='ORG')
+        excelcy.train()
+        assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
 
-    def test_train_basic(self):
-        # test: train with single row
-        # Annotate Uber manually to ORG
-        test_path = self.get_test_data_path('test_data_01.xlsx')
-        self.assert_ents(data_path=test_path)
-
-    def test_train_matcher_nlp(self):
-        # test: train with pipe matcher
-        # Annotate Uber with nlp pattern phrase matcher
-        test_path = self.get_test_data_path('test_data_02.xlsx')
-        tests = {'1': {('$1 million', 'MONEY'), ('a week', 'DATE')}}
-        self.assert_ents(data_path=test_path, tests=tests)
-
-    def test_train_matcher_regex(self):
-        # test: train with pipe matcher
-        # Annotate aweek with regex pattern matcher
-        test_path = self.get_test_data_path('test_data_03.xlsx')
-        tests = {'1': {('Uber', 'ORG')}}
-        self.assert_ents(data_path=test_path, tests=tests)
-
-    def test_train_complex(self):
-        # test: train with more complex data including given span
-        test_path = self.get_test_data_path('test_data_04.xlsx')
-        self.assert_ents(data_path=test_path)
-
-    def test_train_smash(self):
-        # disabled for now, 2880 sentences test takes 1286 seconds
-        pass
-
-        # test: train with 2880 sentences
-        # test_path = self.get_test_data_path('test_data_05.xlsx')
-        # self.assert_ents(data_path=test_path, options={'clean': True})
-
-    def test_read_write(self):
-        # read the data first
-        test_path = self.get_test_data_path('test_data_01.xlsx')
-        data_trainer = DataTrainer(data_path=test_path)
-
-        # re-create the data
-        data_path = self.get_test_dir_path('test_data_01.xlsx')
-        data_trainer.data_save(data_path)
-
-        # reload it again
-        data_trainer2 = DataTrainer(data_path=data_path)
-
-        # and compare them, it should be exact the same
-        assert data_trainer.data_train == data_trainer2.data_train
-        assert data_trainer.data_config == data_trainer2.data_config
-
-    def test_readme(self):
-        import os
-        import spacy
-        import tempfile
-        from excelcy import ExcelCy
-
-        # create nlp data model based on "en_core_web_sm" and save it to "test_data_01"
-        base = 'en_core_web_sm'
-        nlp = spacy.load(base)
-
-        # save and reload to verify
-
-        # create dir nlp
-        tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
-        name = os.path.join(tmp_path, 'nlp/test_data_01')
-        os.makedirs(name, exist_ok=True)
-        # save it
-        nlp.to_disk(name)
-        nlp = spacy.load(name)
-
-        # test the NER
-        text = 'Uber blew through $1 million a week'
-        doc = nlp(text)
-        ents = set([(ent.text, ent.label_) for ent in doc.ents])
-
-        # this shows current model in test_data_01, has no "Uber" identified as ORG
-        assert ents == {('$1 million', 'MONEY')}
-
-        # lets train
+    def test_readme_02(self):
+        """ Test: code snippet found in README.rst """
         excelcy = ExcelCy()
-        # copy excel from https://github.com/kororo/excelcy/tree/master/excelcy/tests/data/test_data_01.xlsx
-        # ensure name is "nlp/test_data_01" inside config sheet.
-        # ensure directory data model "nlp/test_data_01" is created and exist.
-        test_path = self.get_test_data_path('test_data_01.xlsx')
-        excelcy.train(data_path=test_path)
+        excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+        excelcy.storage.train.add(text='Robertus Johansyah is the maintainer ExcelCy')
+        excelcy.storage.train.add(text='Who is the maintainer of ExcelCy? Robertus Johansyah, I think.')
+        excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
+        excelcy.prepare()
+        excelcy.train()
+        assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
+        assert excelcy.nlp('Who is the maintainer of ExcelCy? Robertus Johansyah, I think.').ents[1].label_ == 'PERSON'
 
-        # reload the data model
-        nlp = spacy.load(name)
-
-        # test the NER
-        doc = nlp(text)
-        ents = set([(ent.text, ent.label_) for ent in doc.ents])
-
-        # this shows current model in test_data_01, has "Uber" identified as ORG
-        assert ents == {('Uber', 'ORG'), ('$1 million', 'MONEY')}
-
-    def test_readme_simple(self):
-        from excelcy import ExcelCy
-
-        test_path = self.get_test_data_path('test_data_28.xlsx')
+    def test_readme_03(self):
+        """ Test: code snippet found in README.rst """
         excelcy = ExcelCy()
-        excelcy.train(data_path=test_path)
-
-    def test_init_errors(self):
-        with pytest.raises(ValueError) as excinfo:
-            test_path = self.get_test_data_path('test_data_28.xlsx')
-            data_trainer = DataTrainer(data_path=test_path)
-            data_trainer.reset()
-            data_trainer.train()
-        assert str(excinfo.value) == errors.Errors.E001
+        excelcy.storage.base_path = self.test_data_path
+        excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+        excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
+        excelcy.storage.source.add(kind='textract', value='source/test_source_01.txt')
+        excelcy.storage.prepare.add(kind='phrase', value='Uber', entity='ORG')
+        excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
+        excelcy.discover()
+        excelcy.prepare()
+        excelcy.train()
+        assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
+        assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
 
     def test_source(self):
-        exelcy = ExcelCy()
+        excelcy = ExcelCy()
         test_path = self.get_test_data_path('test_data_01.xlsx')
-        exelcy.load(file_path=test_path)
-        exelcy.discover()
-        print(exelcy.storage.items())
+        excelcy.load(file_path=test_path)
+        excelcy.discover()
+        excelcy.prepare()
+        excelcy.train()
+        doc = excelcy.nlp('Android Pay test')
+        print(doc.ents[0].label_)
+        import json
+        # print(json.dumps(excelcy.storage.items()['train'], indent=2))
+
+        # print(exelcy.storage.items())
