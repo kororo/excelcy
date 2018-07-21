@@ -14,15 +14,14 @@ ExcelCy
     :target: https://gitter.im/excelcy
     :alt: Gitter
 
----
+------
 
 ExcelCy is a spaCy toolkit to help improving the data training experiences. ExcelCy is able to parse Word documents, PowerPoint presentations, PDF or images. Then, extract sentences from the files and train based on the given data in Excel file for compact data format.
 
 ExcelCy is Powerful
 -------------------
 
-ExcelCy focuses on training data into spaCy data model. Illustration below is based on the documentation in
-`Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
+ExcelCy focuses on training spaCy data model. This is spaCy documentation from `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
 
 .. code-block:: python
 
@@ -42,36 +41,45 @@ The **TRAIN_DATA**, describes list of text sentences including the annotated ent
 
 .. code-block:: python
 
-    # Please, use Excel data format for easier experience, this is API example.
-
+    # use Excel data format for easier experience, this is API example.
     from excelcy import ExcelCy
     from excelcy.storage import Config
 
+    # create object
     excelcy = ExcelCy()
+    # set config
     excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+    # add training data
     train = excelcy.storage.train.add(text='Uber blew through $1 million a week')
+    # assign Uber -> ORG
     train.add(subtext='Uber', entity='ORG')
+    # train it
     excelcy.train()
-
+    # test it
     assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
 
-Also, it is tedious job to annotate if there are subtext of "Uber" in multiple sentences, which they are referring to same entity type of "ORG". By using ExcelCy, there is a way to address them using exact match or regex rules.
+It is tedious job to annotate "Uber" to "ORG" in multiple sentences. By using ExcelCy, can be addressed using regex or phrase matcher.
 
 .. code-block:: python
 
-    # Please, use Excel data format for easier experience, this is API example.
-
+    # use Excel data format for easier experience, this is API example.
     from excelcy import ExcelCy
     from excelcy.storage import Config
 
+    # create object
     excelcy = ExcelCy()
+    # set config
     excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+    # add training data
     excelcy.storage.train.add(text='Robertus Johansyah is the maintainer ExcelCy')
     excelcy.storage.train.add(text='Who is the maintainer of ExcelCy? Robertus Johansyah, I think.')
+    # add phrase matcher Robertus Johansyah -> PERSON
     excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
+    # automatically assign Robertus Johansyah -> PERSON into training data
     excelcy.prepare()
+    # train it
     excelcy.train()
-
+    # test it
     assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
     assert excelcy.nlp('Who is the maintainer of ExcelCy? Robertus Johansyah, I think.').ents[1].label_ == 'PERSON'
 
@@ -79,29 +87,34 @@ Installing `textract <https://github.com/deanmalmgren/textract>`__ enables Excel
 
 .. code-block:: python
 
-    # Please, use Excel data format for easier experience, this is API example.
-
+    # use Excel data format for easier experience, this is API example.
     from excelcy import ExcelCy
     from excelcy.storage import Config
 
+    # create object
     excelcy = ExcelCy()
+    # set config
     excelcy.storage.base_path = 'curernt_project_path'
     excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+    # add sources
     excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
     excelcy.storage.source.add(kind='textract', value='source/test_source_01.txt')
+    # add phrase matcher Uber -> ORG and Robertus Johansyah -> PERSON
     excelcy.storage.prepare.add(kind='phrase', value='Uber', entity='ORG')
     excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
+    # parse data sources
     excelcy.discover()
+    # automatically assign Uber -> ORG and Robertus Johansyah -> PERSON into training data
     excelcy.prepare()
+    # train it
     excelcy.train()
+    # test it
     assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
     assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
 
 
 ExcelCy is Friendly
 -------------------
-
-ExcelCy has clear training journey:
 
 1. Discovery
 
@@ -151,10 +164,45 @@ More Information:
 
 After trained, User able to save the result into disk. Potentially, keep repeat the steps.
 
+ExcelCy is Comprehensive
+------------------------
+
+It is easy to inspect and understand what is the current state of the data in ExcelCy. In any phase of the training experience, it is possible to dump the values as Python objects or export it as Excel.
+
+.. code-block:: python
+
+    from excelcy import ExcelCy
+
+    excelcy = ExcelCy()
+    # load configuration from XLSX or YML or JSON
+    # excelcy.load(file_path='test_data_01.xlsx')
+    # or define manually
+    excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
+    print(json.dumps(excelcy.storage.items(), indent=2))
+
+    # add sources
+    excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
+    excelcy.discover()
+    print(json.dumps(excelcy.storage.items(), indent=2))
+
+    # add phrase matcher Robertus Johansyah -> PERSON
+    excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
+    excelcy.prepare()
+    print(json.dumps(excelcy.storage.items(), indent=2))
+
+    # train it
+    excelcy.train()
+    print(json.dumps(excelcy.storage.items(), indent=2))
+
+    # test it
+    doc = excelcy.nlp('Robertus Johansyah is maintainer ExcelCy')
+    print(json.dumps(excelcy.storage.items(), indent=2))
+
+
 ExcelCy is Growing
 ------------------
 
-Currently, ExcelCy keeps improving to better shape. It is likely a few things changed from new releases. It is highly recommended to set fixed release version in your requirements.txt such as: "excelcy==0.2.0". The maintainers in this project will keep the breaking changes to minimum. After major version 1.0.0, API will be locked and any breaking changes will be introduced first as deprecated and will be removed in the next major releases.
+Currently, ExcelCy keeps improved. It is recommended to set fixed version in requirements.txt such as: "excelcy==0.2.0". The maintainers will keep minimum breaking changes. After major version 1.0.0, API will be locked and any breaking changes will be introduced first as deprecated and will be removed in the next major releases.
 
 Features
 --------
@@ -195,9 +243,7 @@ To train the SpaCy model:
 .. code-block:: python
 
     from excelcy import ExcelCy
-
-    excelcy = ExcelCy()
-    excelcy.train(data_path='test_data_28.xlsx')
+    excelcy = ExcelCy.execute(file_path='test_data_28.xlsx')
 
 Note: `tests/data/test_data_28.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_28.xlsx>`__
 
@@ -251,7 +297,10 @@ Test the training manually:
 Data Structure
 --------------
 
-ExcelCy has strong data definition which specified in `test_data_01.yml <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.yml>`__. It is basically configuration of data dictionaries which enable ExcelCy to accept any type of configuration formats, such as, JSON, YML and Excel.
+ExcelCy has strong data definition which specified in `test_data_01.yml <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.yml>`__. It is basically configuration of data dictionaries which enable ExcelCy to accept any type of configuration formats, such as, JSON, YML and Excel. ExcelCy uses `attrs <https://github.com/python-attrs/attrs>`__, which greatly help to add Code Intellisense of data storage.
+
+Data Definition
+---------------
 
 config
 ^^^^^^
@@ -263,6 +312,15 @@ Extra configuration for the training.
 - prepare_enabled: Enable to add entity annotation based on pipe-matcher, described below.
 - train_iteration: How many iteration to train described `here <https://spacy.io/usage/training#annotations>`__
 - train_drop: How much to dropout rate based on `here <https://spacy.io/usage/training#tips-dropout>`__
+
+source
+^^^^^^
+
+Data source to train.
+
+- idx: Unique ID
+- kind: Data source type either "text" or "textract"
+- value: The raw sentence if text, otherwise relative/absolute path to file
 
 train
 ^^^^^
@@ -286,9 +344,6 @@ Any non-existence Entity in nlp, it will automatically added using "ner" pipe, s
 **Examples:**
 
 - `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
-- `tests/data/test_data_02.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_02.xlsx>`__
-- `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_03.xlsx>`__
-- `tests/data/test_data_04.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_04.xlsx>`__
 
 Sheet: pipe-matcher
 ^^^^^^^^^^^^^^^^^^^

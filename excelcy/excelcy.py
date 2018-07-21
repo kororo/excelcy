@@ -2,6 +2,7 @@ import os
 import random
 import tempfile
 import spacy
+from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
 from excelcy.utils import odict
@@ -32,7 +33,10 @@ class ExcelCy(object):
         Parse the file storage and load into memory
         :param file_path: The file path
         """
-        self.storage.load(file_path=file_path)
+        try:
+            self.storage.load(file_path=file_path)
+        except FileNotFoundError:
+            raise ValueError(Errors.E001)
         return self
 
     def save(self, file_path: str):

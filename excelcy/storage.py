@@ -107,15 +107,19 @@ class Trains(Registry):
 
 @attr.s()
 class Storage(Registry):
-    config = field(Config())  # type: Config
-    source = field(Sources())  # type: Sources
-    prepare = field(Prepares())  # type: Prepares
-    train = field(Trains())  # type: Trains
+    config = field(None)  # type: Config
+    source = field(None)  # type: Sources
+    prepare = field(None)  # type: Prepares
+    train = field(None)  # type: Trains
 
     def __attrs_post_init__(self):
         super(Storage, self).__attrs_post_init__()
         self.base_path = None
         self.nlp_path = None
+        self.config = Config()
+        self.source = Sources()
+        self.prepare = Prepares()
+        self.train = Trains()
 
     def _load_yml(self, file_path: str):
         """

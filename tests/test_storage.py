@@ -17,4 +17,4 @@ class TestExcelCy(BaseTestCase):
         train = storage.train.add(text='Android Pay expands to Canada.')
         train.add(subtext='Android Pay', span=(0, 11), entity='PRODUCT')
         # print(json.dumps(storage.items(), indent=2))
-        utils.yaml_save(storage.items(), 'test.yml')
+        # utils.yaml_save(storage.items(), 'test.yml')
