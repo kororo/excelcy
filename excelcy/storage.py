@@ -1,6 +1,7 @@
 import os
 import typing
 import attr
+from excelcy import utils
 from excelcy.registry import Registry, field
 from excelcy.utils import odict
 
@@ -94,29 +95,119 @@ class Storage(Registry):
     prepare = field(Prepares())  # type: Prepares
     train = field(Trains())  # type: Trains
 
-    def save(self, file_path: str):
-        file_name, file_ext = os.path.splitext(file_path)
-        if file_ext == '.xlsx':
-            # TODO: implement
-            pass
-        elif file_ext == '.json':
-            # TODO: implement
-            pass
-        else:
-            # TODO: implement
-            pass
+    def __attrs_post_init__(self):
+        super(Storage, self).__attrs_post_init__()
+        self.base_path = None
+        self.nlp_path = None
+
+    def _load_yml(self, file_path: str):
+        """
+        Data loader for YML
+        :param file_path: YML file path
+        """
+        data = utils.yaml_load(file_path=file_path)
+        self.parse(data=data)
+
+    def _load_xlsx(self, file_path: str):
+        """
+        Data loader for XLSX, this needs to be converted back to YML structure format
+        :param file_path: XLSX file path
+        """
+        wb = utils.excel_load(file_path=file_path)
+        data = odict()
+
+        # TODO: add validator, if wrong data input
+
+        # parse config
+        data['config'] = odict()
+        for config in wb.get('config', odict()):
+            name, value = config.get('name'), config.get('value')
+            data['config'][name] = value
+
+        # parse source
+        data['source'] = odict()
+        data['source']['items'] = odict()
+        for source in wb.get('source', []):
+            idx = source.get('idx')
+            data['source']['items'][idx] = source
+
+        # parse prepare
+        data['prepare'] = odict()
+        data['prepare']['items'] = odict()
+        for prepare in wb.get('prepare', []):
+            idx = prepare.get('idx')
+            data['prepare']['items'][idx] = prepare
+
+        # parse train
+        data['train'] = odict()
+        data['train']['items'] = odict()
+        for train in wb.get('train', []):
+            idx = str(train.get('idx'))
+            train_idx, gold_idx = idx, None
+            if '.' in idx:
+                train_idx, gold_idx = idx.split('.')
+            # add train list
+            if gold_idx is None:
+                t = odict()
+                # TODO: refactor to less hardcoded?
+                t['items'] = odict()
+                for k in ['idx', 'text']:
+                    t[k] = train.get(k)
+                data['train']['items'][train_idx] = t
+            else:
+                t = data['train']['items'][train_idx]
+                g = odict()
+                # TODO: refactor to less hardcoded?
+                for k in ['idx', 'subtext', 'span', 'entity']:
+                    g[k] = train.get(k)
+                t['items'][idx] = g
+        self.parse(data=data)
 
     def load(self, file_path: str):
+        """
+        Load storage data from file path
+        :param file_path: File path
+        """
         file_name, file_ext = os.path.splitext(file_path)
-        if file_ext == '.xlsx':
-            # TODO: implement
-            pass
-        elif file_ext == '.json':
-            # TODO: implement
-            pass
-        else:
-            # TODO: implement
-            pass
+        self.base_path = os.path.dirname(file_path)
+        processor = getattr(self, '_load_%s' % file_ext[1:])
+        if processor:
+            processor(file_path=file_path)
 
-storage = Storage()
-storage.source.items['1'].kind
+    def _save_yml(self, file_path: str):
+        utils.yaml_save(file_path=file_path, data=self.items())
+
+    def _save_xlsx(self, file_path: str):
+        pass
+
+    def save(self, file_path: str):
+        file_name, file_ext = os.path.splitext(file_path)
+        self.base_path = os.path.dirname(file_path)
+        processor = getattr(self, '_save_%s' % file_ext[1:])
+        if processor:
+            processor(file_path=file_path)
+
+    def parse(self, data: odict):
+        """
+        Overwrite current state of storage with given data
+        :param data: Data in ordereddict
+        """
+        # parse config
+        self.config = Config(**data.get('config', {}))
+
+        # parse source
+        self.source = Sources()
+        for idx, source in data.get('source', {}).get('items', {}).items():
+            self.source.add(**source)
+
+        # parse prepare
+        self.prepare = Prepares()
+        for idx, prepare in data.get('prepare', {}).get('items', {}).items():
+            self.prepare.add(**prepare)
+
+        # parse train
+        self.train = Trains()
+        for idx, trn in data.get('train', {}).get('items', {}).items():
+            train = self.train.add(idx=idx, text=trn.get('text'))
+            for idx2, gold in trn.get('items', {}).items():
+                train.add(**gold)

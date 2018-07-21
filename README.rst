@@ -14,13 +14,13 @@ ExcelCy
     :target: https://gitter.im/excelcy
     :alt: Gitter
 
-ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
-It has helper to pre-train entity annotation with phrase and regex matcher pipe.
+        ExcelCy is a SpaCy toolkit to help improve the data training experiences. It provides easy annotation using Excel file format.
+        It has helper to pre-train entity annotation with phrase and regex matcher pipe.
 
 ExcelCy is Powerful
 -------------------
 
-ExcelCy focuses on the needs of training data into spaCy data model. Illustration below is based on the documentation in
+ExcelCy focuses on training data into spaCy data model. Illustration below is based on the documentation in
 `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
 
 .. code-block:: python
@@ -38,7 +38,7 @@ ExcelCy focuses on the needs of training data into spaCy data model. Illustratio
     nlp.to_disk('/model')
 
 The **TRAIN_DATA**, describes list of text sentences including the annotated entities to be trained. It is cumbersome
-to always count the characters. With ExcelCy, start,end characters can be omitted.
+to always count the characters. With ExcelCy, (start,end) characters can be omitted.
 
 .. code-block:: python
 
@@ -62,15 +62,63 @@ to automatically add the annotation Entity using pipe-matcher either exact match
         {'pattern': '[a|an|\d+] week?', 'type': 'regex', 'entity': 'TIME'}
     ]
 
+To express how powerful is ExcelCy, training data can be in PDF, JSON, TXT or any files, which the author of `textract <http://textract.readthedocs.io/en/latest/>`__ called as "dark data".
+
+
+ExcelCy is Friendly
+-------------------
+
+ExcelCy has straightforward training journey:
+
+1. Discovery
+This phase is to specify data sources, which `textract <http://textract.readthedocs.io/en/latest/>`__ accepts.
+The sources should be parsed and converted into sentences.
+
+Input -> Process -> Output:
+    Documents/Files-> textract/file parser -> sentences
+
+Please see, "Data Sheet: Source" for more detail.
+
+2. Preparation
+This phase is to process data from sentences into identified things such as Entity based on the nlp data model selected.
+This concept similar to meta-learning, which the current sentences are annotated with pre-identified words/patterns such as:
+- Phrase pattern: Robertus Johansyah, Uber, Google, Amazon
+- Regex pattern: time regex ^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$
+
+Input -> Process -> Output:
+    Sentences -> Apply nlp(sentence) + PipeMatcher -> Identified things collected (such as Entity)
+
+Please see, "Data Sheet: Prepare" for more detail.
+
+3. Training
+In this phase, User train current/new data model to improve the quality based on the specified list of Entities annotation.
+
+Input -> Process -> Output:
+    nlp data model -> NER training + gold entities -> nlp data model
+
+Please see, "Data Sheet: Prepare" for more detail.
+
+4. Consolidation
+After trained, User able to save the result into disk. Potentially, keep repeat the steps.
+Please see, "Trained, What is Next" for more detail.
+
+ExcelCy is Growing
+------------------
+
+Currently, ExcelCy keeps improving to better shape. It is likely a few things changed from new releases.
+It is highly recommeded to always fixate the library release version in your requirements.txt such as: "excelcy==0.2.0"
+Maintainers in this project will keep the best to maintain the API changes to minimum.
+After major version 1.0.0, API will be locked and any breaking changes will be introduced first as deprecated and will be removed in the next major releases.
+
 Features
 --------
 
-- Add training data from Excel.
+- Load training data from any files using Excel.
 - Add custom Entity labels.
 - Annotate Entity from given sentences without (start, end) char position.
 - Rule based phrase matching using `PhraseMatcher <https://spacy.io/usage/linguistic-features#adding-phrase-patterns>`__
 - Rule based matching using `regex + Matcher <https://spacy.io/usage/linguistic-features#regex>`__
-- Add Entity training data using pipe matcher described above.
+- Train Named Entity Recogniser with ease
 
 Install
 -------
@@ -99,9 +147,6 @@ To train the SpaCy model:
 
 .. code-block:: python
 
-    import os
-    import tempfile
-    import spacy
     from excelcy import ExcelCy
 
     excelcy = ExcelCy()
@@ -241,10 +286,16 @@ TODO
     - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add list of patterns easily (such as kitten breed)
+    - [ ] Add ref in data storage
+    - [ ] Add plugin, otherwise just extends for now
 
 - [ ] Improve speed and performance
 - [ ] 100% coverage target with config (branch=on)
 - [X] Submit to Prodigy Universe
+
+FAQ
+---
+1. Why there is requirement to add idx values in column?
 
 
 Acknowledgement
@@ -252,5 +303,8 @@ Acknowledgement
 
 This project uses other awesome projects:
 
-- `spaCy <https://github.com/explosion/spaCy>`__
-- `pyexcel <https://github.com/pyexcel/pyexcel>`__
+- `attrs <https://github.com/python-attrs/attrs>`__: Python Classes Without Boilerplate
+- `pyexcel <https://github.com/pyexcel/pyexcel>`__:
+- `pyyaml <https://github.com/yaml/pyyaml>`__: The next generation YAML parser and emitter for Python.
+- `spacy <https://github.com/explosion/spaCy>`__
+- `textract <https://github.com/deanmalmgren/textract>`__

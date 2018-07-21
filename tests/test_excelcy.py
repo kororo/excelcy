@@ -120,3 +120,10 @@ class TestExcelCy(BaseTestCase):
             data_trainer.reset()
             data_trainer.train()
         assert str(excinfo.value) == errors.Errors.E001
+
+    def test_source(self):
+        exelcy = ExcelCy()
+        test_path = self.get_test_data_path('test_data_01.xlsx')
+        exelcy.load(file_path=test_path)
+        exelcy.discover()
+        print(exelcy.storage.items())
