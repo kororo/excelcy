@@ -25,8 +25,8 @@ class MatcherPipe(object):
 
         Pattern examples:
         patterns = [
-            {'pattern': 'amazon', 'type': 'nlp', 'entity': 'PRODUCT'},
-            {'pattern': 'ama(.+)', 'type': 'regex', 'entity': 'PRODUCT'}
+            {'kind': 'nlp', 'value': 'amazon', 'entity': 'PRODUCT'},
+            {'kind': 'regex', 'value': 'ama(.+)', 'entity': 'PRODUCT'}
         ]
 
         :param nlp: The NLP object
@@ -46,23 +46,23 @@ class MatcherPipe(object):
         :param patterns: List of pattern
         """
         for pattern in patterns:
-            ppattern, ptype, pentity = pattern.get('pattern'), pattern.get('type'), pattern.get('entity')
-            self.add_pattern(pattern=ppattern, ptype=ptype, entity=pentity)
+            kind, value, entity = pattern.get('kind'), pattern.get('value'), pattern.get('entity')
+            self.add_pattern(kind=kind, value=value, entity=entity)
 
-    def add_pattern(self, pattern, ptype: str, entity: str):
+    def add_pattern(self, kind: str, value, entity: str):
         """
         Add pattern into matcher algorithm. There are two different types:
         - nlp: This uses PhraseMatcher which described in https://spacy.io/usage/linguistic-features#adding-phrase-patterns
         - regex: This uses Matcher which described in https://spacy.io/usage/linguistic-features#regex
 
-        :param pattern: Entity pattern matcher
-        :param ptype: Pattern matcher type, either 'nlp', 'regex'
+        :param kind: Pattern matcher type, either 'nlp', 'regex'
+        :param value: Entity pattern matcher
         :param entity: Entity to be matched
         """
-        if ptype == 'nlp':
-            self.phrase_matcher.add(entity, None, *[self.nlp(pattern)])
-        elif ptype == 'regex':
-            regex_flag = self.nlp.vocab.add_flag(lambda text: self.eval_regex(pattern=pattern, text=text))
+        if kind == 'nlp':
+            self.phrase_matcher.add(entity, None, *[self.nlp(value)])
+        elif kind == 'regex':
+            regex_flag = self.nlp.vocab.add_flag(lambda text: self.eval_regex(pattern=value, text=text))
             self.matcher.add(entity, None, [{regex_flag: True}])
 
     def eval_regex(self, pattern, text):
