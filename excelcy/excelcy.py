@@ -4,7 +4,7 @@ import tempfile
 import typing
 import spacy
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
-from excelcy.storage import Storage, Source
+from excelcy.storage import Storage, Source, Prepare, Train
 from excelcy.utils import odict
 from excelcy.errors import Errors
 
@@ -195,9 +195,11 @@ class ExcelCy(object):
         """
         # this is based on SBD described here
         doc = self.nlp(source.value)
-        for sentence in doc.sents:
+        for sent in doc.sents:
             # TODO: would be good to add ref from source
-            self.storage.train.add(text=sentence)
+            # TODO: add filter?
+            text = sent.text.strip()
+            self.storage.train.add(text=text)
 
     def _discover_textract(self, source: Source):
         """
@@ -209,18 +211,62 @@ class ExcelCy(object):
         # process it
         text = textract.process(self.resolve_path(file_path=source.value), language=self.storage.config.source_language)
         # create new source and pass it to text processor
-        new_source = Source(idx=source.idx, kind='text', value=str(text))
+        value = text.decode('utf-8')
+        new_source = Source(idx=source.idx, kind='text', value=value)
         self._discover_text(new_source)
 
     def discover(self):
         """
         Start load source data, iterate one by one and parse into sentences
-        :return:
         """
         for _, source in self.storage.source.items.items():
-            processor = getattr(self, '_discover_%s' % source.kind)
+            processor = getattr(self, '_discover_%s' % source.kind, None)
             if processor:
                 processor(source=source)
+
+    def _prepare_init_base(self, prepare: Prepare):
+        pipe = self.nlp.get_pipe(EXCELCY_MATCHER)  # type: MatcherPipe
+        pipe.add_pattern(kind=prepare.kind, value=prepare.value, entity=prepare.entity)
+
+    def _prepare_init_phrase(self, prepare: Prepare):
+        self._prepare_init_base(prepare=prepare)
+
+    def _prepare_init_regex(self, prepare: Prepare):
+        self._prepare_init_base(prepare=prepare)
+
+    def _prepare_init_index(self, prepare: Prepare):
+        self._prepare_init_base(prepare=prepare)
+
+    def _prepare_parse(self, train: Train):
+        # parse existing
+        for _, gold in train.items.items():
+            if not gold.span:
+                offset = train.text.find(gold.subtext)
+                if offset != -1:
+                    gold.span = (offset, offset + len(gold.subtext))
+        # parse new
+        doc = self.nlp(train.text)
+        for ent in doc.ents:
+            subtext, start, end, label = ent.text, ent.start_char, ent.end_char, ent.label_
+            train.add(subtext=subtext, span=(int(start), int(end)), entity=label)
+
+    def prepare(self):
+        """
+        Identify Entity from sentences
+        """
+        if self.storage.config.prepare_enabled:
+            # prepare nlp to add matcher pipe
+            self.nlp.add_pipe(MatcherPipe(self.nlp))
+
+            # parse data
+            for _, prepare in self.storage.prepare.items.items():
+                processor = getattr(self, '_prepare_init_%s' % prepare.kind, None)
+                if processor:
+                    processor(prepare=prepare)
+
+            # identify sentences
+            for _, train in self.storage.train.items.items():
+                self._prepare_parse(train=train)
 
     def train(self, data_path: str, auto_save: bool = True, options: dict = None):
         data_trainer = DataTrainer(data_path=data_path, options=options)

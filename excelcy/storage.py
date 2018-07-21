@@ -28,7 +28,11 @@ class Source(Registry):
 
 @attr.s()
 class Sources(Registry):
-    items = field(odict())  # type: typing.Dict[str, Source]
+    items = field(None)  # type: typing.Dict[str, Source]
+
+    def __attrs_post_init__(self):
+        super(Sources, self).__attrs_post_init__()
+        self.items = odict()
 
     def add(self, kind: str, value: str, idx: str = None):
         idx = idx or len(self.items)
@@ -47,7 +51,11 @@ class Prepare(Registry):
 
 @attr.s()
 class Prepares(Registry):
-    items = field(odict())  # type: typing.Dict[str, Prepare]
+    items = field(lambda: None)  # type: typing.Dict[str, Prepare]
+
+    def __attrs_post_init__(self):
+        super(Prepares, self).__attrs_post_init__()
+        self.items = odict()
 
     def add(self, kind: str, value, entity: str, idx: str = None):
         idx = idx or len(self.items)
@@ -68,7 +76,11 @@ class Gold(Registry):
 class Train(Registry):
     idx = field(None)  # type: str
     text = field(None)  # type: str
-    items = field(odict())  # type: typing.Dict[str, Gold]
+    items = field(None)  # type: typing.Dict[str, Gold]
+
+    def __attrs_post_init__(self):
+        super(Train, self).__attrs_post_init__()
+        self.items = odict()
 
     def add(self, subtext: str, span: (int, int), entity: str, idx: str = None):
         idx = idx or '%s.%s' % (self.idx, len(self.items))
@@ -79,7 +91,11 @@ class Train(Registry):
 
 @attr.s()
 class Trains(Registry):
-    items = field(odict())  # type: typing.Dict[str, Train]
+    items = field(None)  # type: typing.Dict[str, Train]
+
+    def __attrs_post_init__(self):
+        super(Trains, self).__attrs_post_init__()
+        self.items = odict()
 
     def add(self, text: str, idx: str = None):
         idx = idx or len(self.items)
@@ -170,7 +186,7 @@ class Storage(Registry):
         """
         file_name, file_ext = os.path.splitext(file_path)
         self.base_path = os.path.dirname(file_path)
-        processor = getattr(self, '_load_%s' % file_ext[1:])
+        processor = getattr(self, '_load_%s' % file_ext[1:], None)
         if processor:
             processor(file_path=file_path)
 
@@ -183,7 +199,7 @@ class Storage(Registry):
     def save(self, file_path: str):
         file_name, file_ext = os.path.splitext(file_path)
         self.base_path = os.path.dirname(file_path)
-        processor = getattr(self, '_save_%s' % file_ext[1:])
+        processor = getattr(self, '_save_%s' % file_ext[1:], None)
         if processor:
             processor(file_path=file_path)
 
