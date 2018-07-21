@@ -1,152 +1,25 @@
 import os
 import random
 import tempfile
-import typing
 import spacy
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
 from excelcy.utils import odict
-from excelcy.errors import Errors
-
-
-class DataTrainer(object):
-    def __init__(self, data_path: str, options: dict = None):
-        """
-        SpaCy data trainer with Excel.
-
-        The test data can be obtained in directory "tests/files/data1.xlsx"
-        It was taken from https://spacy.io/usage/training#training-data
-
-        See link: https://spacy.io/usage/training
-
-        Options:
-        - clean: Delete existing model
-
-        :param data_path: The excel path.
-        :param options: The options allowed.
-        """
-        options = options or {}
-        options.update(options)
-        self.options = options
-
-        # nlp model path
-        self.nlp_path = None
-        self.data_init = False
-        self.data_path = None
-        self.data_train = odict()  # type: typing.Dict[str, odict]
-        self.data_pipes = odict()
-        self.data_config = odict()
-
-        # load the data from given path
-        self.data_load(data_path=data_path)
-
-        # prepare the nlp object
-        self.nlp = self.create_nlp()
-
-    def reset(self):
-        self.nlp_path = None
-        self.data_init = False
-        self.data_path = None
-        self.data_train = odict()  # type: typing.Dict[str, odict]
-        self.data_pipes = odict()
-        self.data_config = odict()
-        self.nlp = None
-
-    def load_source(self, source_path: str):
-        pass
-
-    def _add_entities(self, ner):
-        entities = []
-
-        for _, data_instance in self.data_train.items():
-            for _, _, entity in data_instance.get('gold', {}).get('entities', []):
-                entities.append(entity)
-
-        for data_pattern in self.data_pipes['matcher']:
-            entity = data_pattern.get('entity')
-            entities.append(entity)
-
-        # https://spacy.io/usage/training#example-new-entity-type
-        for entity in set(entities):
-            ner.add_label(entity)
-
-    def _train_matcher(self):
-        # add matcher pipe
-        nlp = self.nlp
-        nlp.add_pipe(MatcherPipe(nlp, self.data_pipes['matcher']))
-
-        # parse train data
-        for _, data_instance in self.data_train.items():
-            text = data_instance.get('text')
-            doc = nlp(text)
-            for ent in doc.ents:
-                subtext, start, end, label = ent.text, ent.start_char, ent.end_char, ent.label_
-                entity = [int(start), int(end), label]
-                # insert at the begining so it is possible to be overriden
-                data_instance['gold']['entities'].insert(0, entity)
-
-    def train(self, auto_save: bool = True):
-        if not self.data_init:
-            # ensure data loaded
-            raise ValueError(Errors.E001)
-
-        # prepare nlp
-        nlp = self.nlp
-        ner = nlp.get_pipe('ner')
-
-        # add all entity labels
-        self._add_entities(ner=ner)
-
-        # prepare config
-        train_iteration, train_drop = self.data_config.get('train.iteration'), self.data_config.get('train.drop')
-        train_matcher = self.data_config.get('train.matcher')
-
-        if train_matcher is True:
-            # been told to auto add Entity based on the rule based matching
-            self._train_matcher()
-
-        # prepare data
-        data_train_key = list(self.data_train.keys())
-
-        # train now
-        nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
-        optimizer = nlp.begin_training()
-        for itn in range(train_iteration):
-            random.shuffle(data_train_key)
-            for key in data_train_key:
-                data_instance = self.data_train[key]
-                gold = data_instance.get('gold')
-                if gold:
-                    text = data_instance.get('text')
-                    nlp.update([text], [gold], drop=train_drop, sgd=optimizer)
-
-        # test, parse and update data
-        data_train_key = list(self.data_train.keys())
-        for key in data_train_key:
-            data_instance = self.data_train[key]
-            text = data_instance.get('text')
-            subtext = odict()  # type: dict
-            doc = nlp(text)
-            for idx, token in enumerate(doc):
-                skey = '%s.%s' % (key, idx)
-                subtext[skey] = subtext.get(idx, odict())
-                subtext[skey]['subtext'] = token.text
-                subtext[skey]['span'] = '%s,%s' % (token.idx, token.idx + len(token.text))
-                subtext[skey]['entity'] = token.ent_type_
-                subtext[skey]['tag'] = token.tag_
-            data_instance['tokens'] = subtext
-
-        # save
-        if auto_save:
-            if EXCELCY_MATCHER in nlp.pipe_names:
-                nlp.remove_pipe(EXCELCY_MATCHER)
-            nlp.to_disk(self.nlp_path)
 
 
 class ExcelCy(object):
     def __init__(self):
         self.storage = Storage()
         self._nlp = None
+
+    @classmethod
+    def execute(cls, file_path: str):
+        excelcy = cls()
+        excelcy.load(file_path=file_path)
+        excelcy.discover()
+        excelcy.prepare()
+        excelcy.train()
+        return excelcy
 
     @property
     def nlp(self):
@@ -160,9 +33,11 @@ class ExcelCy(object):
         :param file_path: The file path
         """
         self.storage.load(file_path=file_path)
+        return self
 
     def save(self, file_path: str):
         self.storage.save(file_path=file_path)
+        return self
 
     def resolve_path(self, file_path: str):
         tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
@@ -223,6 +98,7 @@ class ExcelCy(object):
             processor = getattr(self, '_discover_%s' % source.kind, None)
             if processor:
                 processor(source=source)
+        return self
 
     def _prepare_init_base(self, prepare: Prepare):
         pipe = self.nlp.get_pipe(EXCELCY_MATCHER)  # type: MatcherPipe
@@ -243,12 +119,12 @@ class ExcelCy(object):
             if not gold.span:
                 offset = train.text.find(gold.subtext)
                 if offset != -1:
-                    gold.span = (offset, offset + len(gold.subtext))
+                    gold.span = '%s,%s' % (offset, offset + len(gold.subtext))
         # parse new
         doc = self.nlp(train.text)
         for ent in doc.ents:
-            subtext, start, end, label = ent.text, ent.start_char, ent.end_char, ent.label_
-            train.add(subtext=subtext, span=(int(start), int(end)), entity=label)
+            subtext, span, label = ent.text, '%s,%s' % (ent.start_char, ent.end_char), ent.label_
+            train.add(subtext=subtext, span=span, entity=label)
 
     def prepare(self):
         """
@@ -267,7 +143,47 @@ class ExcelCy(object):
             # identify sentences
             for _, train in self.storage.train.items.items():
                 self._prepare_parse(train=train)
+        return self
 
-    def train(self, data_path: str, auto_save: bool = True, options: dict = None):
-        data_trainer = DataTrainer(data_path=data_path, options=options)
-        data_trainer.train(auto_save=auto_save)
+    def train(self):
+        nlp = self.nlp
+
+        # gather unique entities
+        entities = []
+        for _, train in self.storage.train.items.items():
+            for _, gold in train.items.items():
+                entities.append(gold.entity)
+
+        # add custom entities based on https://spacy.io/usage/training#example-new-entity-type
+        ner = nlp.get_pipe('ner')
+        for entity in set(entities):
+            ner.add_label(entity)
+
+        # prepare data
+        train_idx = list(self.storage.train.items.keys())
+        trains = odict()
+        for idx, train in self.storage.train.items.items():
+            trains[idx] = {'entities': []}
+            for gold_idx, gold in train.items.items():
+                span = gold.span.replace(' ', '').strip()
+                spans = span.split(',')
+                entities = [int(spans[0]), int(spans[1]), gold.entity]
+                trains[idx]['entities'].append(entities)
+
+        # train now
+        nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
+        optimizer = nlp.begin_training()
+        for itn in range(self.storage.config.train_iteration):
+            random.shuffle(train_idx)
+            for idx in train_idx:
+                text = self.storage.train.items[idx].text
+                train = trains[idx]
+                nlp.update([text], [train], drop=self.storage.config.train_drop, sgd=optimizer)
+
+        # auto save if required
+        if self.storage.config.train_autosave:
+            if EXCELCY_MATCHER in nlp.pipe_names:
+                nlp.remove_pipe(EXCELCY_MATCHER)
+            nlp.to_disk(self.storage.nlp_path)
+
+        return self
