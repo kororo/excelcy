@@ -106,6 +106,7 @@ Under the hood, ExcelCy has strong and well-defined data storage. At any given p
 
     # add sources
     excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
+    excelcy.storage.source.add(kind='textract', value='tests/data/source/test_source_01.txt')
     excelcy.discover()
     print(json.dumps(excelcy.storage.items(), indent=2))
 
