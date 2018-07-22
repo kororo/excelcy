@@ -38,7 +38,7 @@ class BaseTestCase(TestCase):
         return os.path.join(tempfile.gettempdir(), fs_path)
 
     def assert_training(self, file_path: str, entity_tests: dict = None):
-        excelcy = ExcelCy.execute(file_path=self.get_test_data_path(file_path))
+        excelcy = ExcelCy.execute(file_path=file_path)
         nlp = excelcy.nlp
         for idx, train in excelcy.storage.train.items.items():
             train_ents = set([(gold.subtext, gold.entity) for _, gold in train.items.items()])

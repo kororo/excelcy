@@ -189,8 +189,22 @@ class Storage(Registry):
         Load storage data from file path
         :param file_path: File path
         """
-        file_name, file_ext = os.path.splitext(file_path)
-        self.base_path = os.path.dirname(file_path)
+
+        # check whether it is remote URL
+        if '://' in file_path:
+            from urllib import request, parse
+            import tempfile
+            # download the file and put into temp dir
+            file_url = file_path
+            parsed = parse.urlparse(file_url)
+            file_name, file_ext = os.path.splitext(os.path.basename(parsed.path))
+            self.base_path = tempfile.gettempdir()
+            file_path = os.path.join(self.base_path, file_name + file_ext)
+            request.urlretrieve(file_url, file_path)
+        else:
+            # analyse the file name and ext
+            file_name, file_ext = os.path.splitext(file_path)
+            self.base_path = os.path.dirname(file_path)
         processor = getattr(self, '_load_%s' % file_ext[1:], None)
         if processor:
             processor(file_path=file_path)
