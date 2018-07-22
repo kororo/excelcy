@@ -11,4 +11,5 @@ class TestErrors(BaseTestCase):
         with pytest.raises(ValueError) as excinfo:
             excelcy = ExcelCy()
             excelcy.load(file_path='not_exist.xlsx')
-            assert str(excinfo.value) == Errors.E001
+
+        assert str(excinfo.value) == Errors.E001

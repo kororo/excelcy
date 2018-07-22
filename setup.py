@@ -35,10 +35,10 @@ setup(
     author_email='me@kororo.co',
     maintainer='Robertus Johansyah',
     maintainer_email='me@kororo.co',
-    url='https://github.com/_/excelcy',
+    url='https://github.com/kororo/excelcy',
     license='MIT',
     keywords=[
-        'spacy', 'spacy-pipeline', 'spacy-nlp', 'nlp', 'excel', 'xlsx'
+        'spacy', 'spacy-pipeline', 'spacy-nlp', 'nlp', 'python', 'python3', 'entity', 'training', 'excel', 'xlsx', 'spacy-extensions'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

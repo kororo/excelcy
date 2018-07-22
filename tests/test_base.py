@@ -27,20 +27,18 @@ class BaseTestCase(TestCase):
 
     @classmethod
     def teardown_class(cls):
-        nlp_path = cls.get_test_dir_path('nlp')
-        if os.path.exists(nlp_path) and os.path.isdir(nlp_path):
-            shutil.rmtree(nlp_path)
+        pass
 
     @classmethod
     def get_test_data_path(cls, fs_path: str):
         return os.path.join(cls.test_data_path, fs_path)
 
     @classmethod
-    def get_test_dir_path(cls, fs_path: str):
+    def get_test_tmp_path(cls, fs_path: str):
         return os.path.join(tempfile.gettempdir(), fs_path)
 
     def assert_training(self, file_path: str, entity_tests: dict = None):
-        excelcy = ExcelCy.execute(file_path=self.get_test_data_path(file_path))
+        excelcy = ExcelCy.execute(file_path=file_path)
         nlp = excelcy.nlp
         for idx, train in excelcy.storage.train.items.items():
             train_ents = set([(gold.subtext, gold.entity) for _, gold in train.items.items()])

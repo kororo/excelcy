@@ -1,5 +1,4 @@
 import re
-from excelcy.utils import odict
 from spacy.language import Language
 from spacy.matcher import PhraseMatcher, Matcher
 from spacy.tokens.doc import Doc
@@ -9,14 +8,6 @@ EXCELCY_MATCHER = 'excelcy-matcher'
 
 
 class MatcherPipe(object):
-    class DataMatcherPipe(object):
-        def __init__(self, data: odict):
-            self.data = data
-
-        @property
-        def patterns(self):
-            return self.data
-
     name = EXCELCY_MATCHER
 
     def __init__(self, nlp, patterns: list = None):

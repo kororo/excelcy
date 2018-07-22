@@ -138,6 +138,7 @@ class Storage(Registry):
         data = odict()
 
         # TODO: add validator, if wrong data input
+        # TODO: refactor to less hardcoded?
 
         # parse config
         data['config'] = odict()
@@ -149,28 +150,40 @@ class Storage(Registry):
         data['source'] = odict()
         data['source']['items'] = odict()
         for source in wb.get('source', []):
-            idx = source.get('idx')
-            data['source']['items'][idx] = source
+            idx = source.get('idx', len(data['source']['items']))
+            data['source']['items'][str(idx)] = source
 
         # parse prepare
         data['prepare'] = odict()
         data['prepare']['items'] = odict()
         for prepare in wb.get('prepare', []):
-            idx = prepare.get('idx')
-            data['prepare']['items'][idx] = prepare
+            idx = prepare.get('idx', len(data['prepare']['items']))
+            data['prepare']['items'][str(idx)] = prepare
 
         # parse train
         data['train'] = odict()
         data['train']['items'] = odict()
+        # lets ensure there is idx
+        train_idx, gold_idx = 0, 0
+        for train in wb.get('train', []):
+            if train.get('text') is not None:
+                if gold_idx > 0:
+                    train_idx = train_idx + 1
+                    gold_idx = 0
+                if train.get('idx') is None:
+                    train['idx'] = str(train_idx)
+            else:
+                if train.get('idx') is None:
+                    train['idx'] = '%s.%s' % (train_idx, gold_idx)
+                gold_idx = gold_idx + 1
         for train in wb.get('train', []):
             idx = str(train.get('idx'))
             train_idx, gold_idx = idx, None
             if '.' in idx:
                 train_idx, gold_idx = idx.split('.')
             # add train list
-            if gold_idx is None:
+            if train.get('text') is not None:
                 t = odict()
-                # TODO: refactor to less hardcoded?
                 t['items'] = odict()
                 for k in ['idx', 'text']:
                     t[k] = train.get(k)
@@ -178,7 +191,6 @@ class Storage(Registry):
             else:
                 t = data['train']['items'][train_idx]
                 g = odict()
-                # TODO: refactor to less hardcoded?
                 for k in ['idx', 'subtext', 'span', 'entity']:
                     g[k] = train.get(k)
                 t['items'][idx] = g
@@ -189,8 +201,22 @@ class Storage(Registry):
         Load storage data from file path
         :param file_path: File path
         """
-        file_name, file_ext = os.path.splitext(file_path)
-        self.base_path = os.path.dirname(file_path)
+
+        # check whether it is remote URL
+        if '://' in file_path:
+            from urllib import request, parse
+            import tempfile
+            # download the file and put into temp dir
+            file_url = file_path
+            parsed = parse.urlparse(file_url)
+            file_name, file_ext = os.path.splitext(os.path.basename(parsed.path))
+            self.base_path = tempfile.gettempdir()
+            file_path = os.path.join(self.base_path, file_name + file_ext)
+            request.urlretrieve(file_url, file_path)
+        else:
+            # analyse the file name and ext
+            file_name, file_ext = os.path.splitext(file_path)
+            self.base_path = os.path.dirname(file_path)
         processor = getattr(self, '_load_%s' % file_ext[1:], None)
         if processor:
             processor(file_path=file_path)
@@ -199,7 +225,40 @@ class Storage(Registry):
         utils.yaml_save(file_path=file_path, data=self.items())
 
     def _save_xlsx(self, file_path: str):
-        pass
+        def convert(header: list, registry: Registry):
+            return [getattr(registry, key, None) for key in header]
+
+        data = self.items()
+        sheets = odict()
+
+        # build source sheet
+        headers = ['idx', 'kind', 'value']
+        sheets['source'] = [headers]
+        for _, source in self.source.items.items():
+            sheets['source'].append(convert(sheets['source'][0], source))
+
+        # build prepare sheet
+        headers = ['idx', 'kind', 'value', 'entity']
+        sheets['prepare'] = [headers]
+        for _, prepare in self.prepare.items.items():
+            sheets['prepare'].append(convert(sheets['prepare'][0], prepare))
+
+        # build train sheet
+        headers = ['idx', 'text', 'subtext', 'entity']
+        sheets['train'] = [headers]
+        for _, train in self.train.items.items():
+            sheets['train'].append(convert(sheets['train'][0], train))
+            for _, gold in train.items.items():
+                sheets['train'].append(convert(sheets['train'][0], gold))
+
+        # build config sheet
+        headers = ['name', 'value']
+        sheets['config'] = [headers]
+        for config_name, config_value in self.config.items().items():
+            sheets['config'].append([config_name, config_value])
+
+        # save
+        utils.excel_save(sheets=sheets, file_path=file_path)
 
     def save(self, file_path: str):
         file_name, file_ext = os.path.splitext(file_path)
