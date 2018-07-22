@@ -1,27 +1,25 @@
-# The data structure for ExcelCy.
+# The data definition of ExcelCy.
 
-# Main configuration for the training.
+# main configuration for the training.
 config:
-  # The initial spaCy data model to begin with. Described in https://spacy.io/models/
+  # initial spaCy data model to begin with. Described in https://spacy.io/models/
   nlp_base: en_core_web_sm
-  # The absolute/relative path to save the SpaCy data model after training.
-  # It is possible to use this to read existing data model and training on top existing one.
-  #
-  # Example:
-  # 1. /data/test-data: Value is absolute path, ExcelCy will automatically ensure "/data" exists
-  # 2. test-data: Value is relative, it is always relative to this file directory path.
-  # 3. [tmp]/test-data: Value contains [tmp], it always be replaced by either env variable EXCELCY_TEMP_PATH or
-  #                     python tempfile.gettempdir() output
+  # existing/new spaCy data model path. It accepts, absolute/relative path.
   nlp_name: /data/test-data
-  source_language: en
+  # process prepare phase
   prepare_enabled: true
+  # N iteration to train based on https://spacy.io/usage/training#annotations
   train_iteration: 2
+  # X dropout rate based on https://spacy.io/usage/training#tips-dropout
   train_drop: 0.2
+# data source to train
 source:
   items:
     '0':
       idx: '0'
+      # data source type either "text" or "textract"
       kind: text
+      # the raw sentence if text, otherwise relative/absolute path to file
       value: Uber blew through $1 million a week. Android Pay expands to Canada.
     '1':
       idx: '1'
