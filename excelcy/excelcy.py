@@ -184,8 +184,8 @@ class ExcelCy(object):
                 train = trains[idx]
                 nlp.update([text], [train], drop=self.storage.config.train_drop, sgd=optimizer)
 
-        # auto save if required
-        if self.storage.config.train_autosave:
+        # auto save if required and nlp_path is defined
+        if self.storage.config.train_autosave and self.storage.nlp_path:
             if EXCELCY_MATCHER in nlp.pipe_names:
                 nlp.remove_pipe(EXCELCY_MATCHER)
             nlp.to_disk(self.storage.nlp_path)

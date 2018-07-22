@@ -168,7 +168,7 @@ class Storage(Registry):
             if '.' in idx:
                 train_idx, gold_idx = idx.split('.')
             # add train list
-            if gold_idx is None:
+            if train.get('text') is not None:
                 t = odict()
                 # TODO: refactor to less hardcoded?
                 t['items'] = odict()
