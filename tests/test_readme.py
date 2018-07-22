@@ -3,11 +3,11 @@ from excelcy.storage import Config
 from tests.test_base import BaseTestCase
 
 
-class TestExcelCy(BaseTestCase):
+class ReadmeTestCase(BaseTestCase):
     def test_readme_01(self):
         """ Test: code snippet found in README.rst """
 
-        self.assert_training(file_path='test_data_01.xlsx')
+        self.assert_training(file_path=self.get_test_data_path('test_data_01.xlsx'))
 
     def test_readme_02(self):
         """ Test: code snippet found in README.rst """
@@ -23,7 +23,7 @@ class TestExcelCy(BaseTestCase):
         excelcy.storage.base_path = self.test_data_path
         excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
         excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
-        excelcy.storage.source.add(kind='textract', value='source/test_source_01.txt')
+        excelcy.storage.source.add(kind='textract', value='source/source_01.txt')
         excelcy.storage.prepare.add(kind='phrase', value='Uber', entity='ORG')
         excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
         excelcy.discover()

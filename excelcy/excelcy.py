@@ -115,9 +115,6 @@ class ExcelCy(object):
     def _prepare_init_regex(self, prepare: Prepare):
         self._prepare_init_base(prepare=prepare)
 
-    def _prepare_init_index(self, prepare: Prepare):
-        self._prepare_init_base(prepare=prepare)
-
     def _prepare_parse(self, train: Train):
         # parsing pre-identified Entity based on current data model
         doc = self.nlp(train.text)
@@ -162,7 +159,7 @@ class ExcelCy(object):
         train_idx = list(self.storage.train.items.keys())
         trains = odict()
         for idx, train in self.storage.train.items.items():
-            trains[idx] = {'entities': []}
+            entities = odict()
             for gold_idx, gold in train.items.items():
                 # ensure span is valid positions
                 if not gold.span:
@@ -170,9 +167,12 @@ class ExcelCy(object):
                     if offset != -1:
                         gold.span = '%s,%s' % (offset, offset + len(gold.subtext))
                 span = gold.span.replace(' ', '').strip()
+                if not entities.get(span):
+                    entities[span] = gold.entity
+            trains[idx] = {'entities': []}
+            for span, entity in entities.items():
                 spans = span.split(',')
-                entities = [int(spans[0]), int(spans[1]), gold.entity]
-                trains[idx]['entities'].append(entities)
+                trains[idx]['entities'].append([int(spans[0]), int(spans[1]), entity])
 
         # train now
         nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
