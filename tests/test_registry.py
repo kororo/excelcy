@@ -1,5 +1,6 @@
 import enum
 import attr
+import pytest
 from excelcy.registry import Registry, field
 from tests.test_base import BaseTestCase
 
@@ -78,19 +79,15 @@ class RegistryTestCase(BaseTestCase):
         self.assertRaises(ValueError, params.validate)
 
     def test_exception(self):
-        def test5a():
+        with pytest.raises(ValueError) as excinfo:
             TestParams5a = attr.make_class('TestParams5a', {'f1': field(0), 'f2': field()})
-            return TestParams5a
+        assert excinfo.type == ValueError
 
-        def test5b():
+        with pytest.raises(ValueError) as excinfo:
             @attr.s()
             class TestParams5b(Registry):
                 f1: int = field(0)
                 # this is not allowed
                 f2: int = field()
 
-            return TestParams5b
-
-        # test required param after default param
-        self.assertRaises(ValueError, test5a)
-        self.assertRaises(ValueError, test5b)
+        assert excinfo.type == ValueError
