@@ -16,29 +16,12 @@ ExcelCy
 
 ------
 
-ExcelCy is a toolkit to improve spaCy NLP training experiences. Training NER using XLSX from PDF, DOCX, PPT, PNG or JPG. ExcelCy has pipeline to match Entity with PhraseMatcher or Matcher in regular expression.
+ExcelCy is a toolkit to integrate Excel to spaCy NLP training experiences. Training NER using XLSX from PDF, DOCX, PPT, PNG or JPG. ExcelCy has pipeline to match Entity with PhraseMatcher or Matcher in regular expression.
 
 ExcelCy is Powerful
 -------------------
 
-This is the complete NER training example. The training replicates to the spaCy documentation from `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
-
-.. code-block:: python
-
-    from excelcy import ExcelCy
-    # one line abstraction code to:
-    # - collect sentences from sources
-    # - assign Entities based on phrases
-    # - train the NER using spaCy
-    excelcy = ExcelCy.execute(file_path='test_data_01.xlsx')
-    # use the nlp object as per spaCy API
-    doc = excelcy.nlp('Google rebrands its business apps')
-    # or save it for faster bootstrap for application
-    excelcy.nlp.to_disk('/model')
-
-Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
-
-This code is taken from spaCy documentation, `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
+`Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__, from spaCy documentation, demonstrates how to train NER using spaCy:
 
 .. code-block:: python
 
@@ -54,7 +37,17 @@ This code is taken from spaCy documentation, `Simple Style Training <https://spa
             nlp.update([text], [annotations], sgd=optimizer)
     nlp.to_disk('/model')
 
-The **TRAIN_DATA**, describes list of text sentences including the annotated entities to be trained. It is cumbersome to always count the characters. With ExcelCy, (start,end) characters can be omitted.
+The **TRAIN_DATA**, describes sentences and annotated entities to be trained. It is cumbersome to always count the characters. With ExcelCy, (start,end) characters can be omitted.
+
+.. code-block:: python
+
+    from excelcy import ExcelCy
+    # collect sentences, annotate Entities and train NER using spaCy
+    excelcy = ExcelCy.execute(file_path='https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx')
+    # use the nlp object as per spaCy API
+    doc = excelcy.nlp('Google rebrands its business apps')
+    # or save it for faster bootstrap for application
+    excelcy.nlp.to_disk('/model')
 
 ExcelCy is Friendly
 -------------------
@@ -215,7 +208,6 @@ TODO
     - [X] Add support to accept sentences to Excel
     - [ ] Improve speed and performance
 
-- [ ] 100% coverage target with config (branch=on)
 - [X] Submit to Prodigy Universe
 
 FAQ
