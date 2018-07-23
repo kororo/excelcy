@@ -183,9 +183,11 @@ FAQ
 ---
 
 **Q. What is that idx columns in the Excel sheet?**
+
 A. The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
 
 **Q. Can ExcelCy import/export to X, Y, Z data format?**
+
 A. ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__.
 
 Acknowledgement
@@ -193,8 +195,8 @@ Acknowledgement
 
 This project uses other awesome projects:
 
-- `attrs <https://github.com/python-attrs/attrs>`__: Python Classes Without Boilerplate
-- `pyexcel <https://github.com/pyexcel/pyexcel>`__:
+- `attrs <https://github.com/python-attrs/attrs>`__: Python Classes Without Boilerplate.
+- `pyexcel <https://github.com/pyexcel/pyexcel>`__: Single API for reading, manipulating and writing data in csv, ods, xls, xlsx and xlsm files.
 - `pyyaml <https://github.com/yaml/pyyaml>`__: The next generation YAML parser and emitter for Python.
-- `spacy <https://github.com/explosion/spaCy>`__
-- `textract <https://github.com/deanmalmgren/textract>`__
+- `spacy <https://github.com/explosion/spaCy>`__: Industrial-strength Natural Language Processing (NLP) with Python and Cython.
+- `textract <https://github.com/deanmalmgren/textract>`__: extract text from any document. no muss. no fuss.
