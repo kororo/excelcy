@@ -1,5 +1,10 @@
 # Change Logs
 
+## 0.2.4
+- Enable py35
+- Add remote download support
+- Improved docs
+
 ## 0.2.0
 - Add data structure
 - Refactor ExcelCy API
