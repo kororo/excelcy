@@ -182,13 +182,13 @@ TODO
 FAQ
 ---
 
-**Q. What is that idx columns in the Excel sheet?**
+**Q) What is that idx columns in the Excel sheet?**
 
-A. The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
+A) The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
 
-**Q. Can ExcelCy import/export to X, Y, Z data format?**
+**Q) Can ExcelCy import/export to X, Y, Z data format?**
 
-A. ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__.
+A) ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__.
 
 Acknowledgement
 ---------------
