@@ -1,6 +1,6 @@
 # Change Logs
 
-## 0.2.3
+## 0.2.4
 - Enable py35
 - Add remote download support
 - Improved docs
