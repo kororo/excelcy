@@ -1,5 +1,6 @@
 sudo: true
 language: python
+dist: xenial
 env:
   EXCELCY_TEMP_PATH=${TRAVIS_BUILD_DIR}
 python:
