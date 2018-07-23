@@ -150,37 +150,6 @@ To train the spaCy model:
 
 Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
 
-Advanced Usages
----------------
-
-This is the API to ExcelCy phases.
-
-.. code-block:: python
-
-    from excelcy import ExcelCy
-    from excelcy.storage import Config
-    # create object
-    excelcy = ExcelCy()
-    # set config
-    excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
-    # add sources
-    excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
-    excelcy.storage.source.add(kind='textract', value='test/data/source/test_source_01.txt')
-    # add phrase matcher Uber -> ORG and Robertus Johansyah -> PERSON
-    excelcy.storage.prepare.add(kind='phrase', value='Uber', entity='ORG')
-    excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
-    # parse data sources
-    excelcy.discover()
-    # automatically assign Uber -> ORG and Robertus Johansyah -> PERSON into training data
-    excelcy.prepare()
-    # train it
-    excelcy.train()
-    # test it
-    assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
-    assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
-    # save it
-    excelcy.nlp.to_disk('/model')
-
 Data Definition
 ---------------
 
