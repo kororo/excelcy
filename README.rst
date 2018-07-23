@@ -162,33 +162,38 @@ TODO
 
 - [ ] More features and enhancements listed `here <https://github.com/kororo/excelcy/labels/enhancement>`__
 
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/3>`__] Add CLI support
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/4>`__] Add export outputs such as identified Entities, Tags
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add custom tags.
-    - [ ] Add report outputs such as identified entity, tag
     - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`__
     - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add ref in data storage
+    - [ ] Improve speed and performance
     - [X] Add list of patterns easily (such as kitten breed.
     - [X] Add more data structure check in Excel and more warning messages
     - [X] Add plugin, otherwise just extends for now.
     - [X] [`link <https://github.com/kororo/excelcy/issues/2>`__] Improve experience
     - [X] [`link <https://github.com/kororo/excelcy/issues/1>`__] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [X] Add support to accept sentences to Excel
-    - [ ] Improve speed and performance
 
 - [X] Submit to Prodigy Universe
 
 FAQ
 ---
 
-**Q) What is that idx columns in the Excel sheet?**
+**What is that idx columns in the Excel sheet?**
 
-A) The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
+The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
 
-**Q) Can ExcelCy import/export to X, Y, Z data format?**
+**Can ExcelCy import/export to X, Y, Z data format?**
 
-A) ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__.
+ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__. It is possible to import/export data in any format.
+
+**ExcelCy accepts suggestions/ideas?**
+
+Yes! Please submit them into new issue with label "enhancement".
 
 Acknowledgement
 ---------------
