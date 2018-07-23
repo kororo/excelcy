@@ -1,9 +1,9 @@
 # Change Logs
 
-## 0.2.1
-- Add more tests
-- Update readme
-- Add remote load
+## 0.2.2
+- Enable py35
+- Add remote download support
+- Improved docs
 
 ## 0.2.0
 - Add data structure

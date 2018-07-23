@@ -16,29 +16,12 @@ ExcelCy
 
 ------
 
-ExcelCy is a toolkit to improve spaCy NLP training experiences. Training NER using XLSX from PDF, DOCX, PPT, PNG or JPG. ExcelCy has pipeline to match Entity with PhraseMatcher or Matcher in regular expression.
+ExcelCy is a toolkit to integrate Excel to spaCy NLP training experiences. Training NER using XLSX from PDF, DOCX, PPT, PNG or JPG. ExcelCy has pipeline to match Entity with PhraseMatcher or Matcher in regular expression.
 
 ExcelCy is Powerful
 -------------------
 
-This is the complete NER training example. The training replicates to the spaCy documentation from `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
-
-.. code-block:: python
-
-    from excelcy import ExcelCy
-    # one line abstraction code to:
-    # - collect sentences from sources
-    # - assign Entities based on phrases
-    # - train the NER using spaCy
-    excelcy = ExcelCy.execute(file_path='test_data_01.xlsx')
-    # use the nlp object as per spaCy API
-    doc = excelcy.nlp('Google rebrands its business apps')
-    # or save it for faster bootstrap for application
-    excelcy.nlp.to_disk('/model')
-
-Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
-
-This code is taken from spaCy documentation, `Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__.
+`Simple Style Training <https://spacy.io/usage/training#training-simple-style>`__, from spaCy documentation, demonstrates how to train NER using spaCy:
 
 .. code-block:: python
 
@@ -54,7 +37,17 @@ This code is taken from spaCy documentation, `Simple Style Training <https://spa
             nlp.update([text], [annotations], sgd=optimizer)
     nlp.to_disk('/model')
 
-The **TRAIN_DATA**, describes list of text sentences including the annotated entities to be trained. It is cumbersome to always count the characters. With ExcelCy, (start,end) characters can be omitted.
+The **TRAIN_DATA**, describes sentences and annotated entities to be trained. It is cumbersome to always count the characters. With ExcelCy, (start,end) characters can be omitted.
+
+.. code-block:: python
+
+    from excelcy import ExcelCy
+    # collect sentences, annotate Entities and train NER using spaCy
+    excelcy = ExcelCy.execute(file_path='https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx')
+    # use the nlp object as per spaCy API
+    doc = excelcy.nlp('Google rebrands its business apps')
+    # or save it for faster bootstrap for application
+    excelcy.nlp.to_disk('/model')
 
 ExcelCy is Friendly
 -------------------
@@ -157,37 +150,6 @@ To train the spaCy model:
 
 Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
 
-Advanced Usages
----------------
-
-This is the API to ExcelCy phases.
-
-.. code-block:: python
-
-    from excelcy import ExcelCy
-    from excelcy.storage import Config
-    # create object
-    excelcy = ExcelCy()
-    # set config
-    excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
-    # add sources
-    excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
-    excelcy.storage.source.add(kind='textract', value='test/data/source/test_source_01.txt')
-    # add phrase matcher Uber -> ORG and Robertus Johansyah -> PERSON
-    excelcy.storage.prepare.add(kind='phrase', value='Uber', entity='ORG')
-    excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
-    # parse data sources
-    excelcy.discover()
-    # automatically assign Uber -> ORG and Robertus Johansyah -> PERSON into training data
-    excelcy.prepare()
-    # train it
-    excelcy.train()
-    # test it
-    assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
-    assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
-    # save it
-    excelcy.nlp.to_disk('/model')
-
 Data Definition
 ---------------
 
@@ -200,40 +162,46 @@ TODO
 
 - [ ] More features and enhancements listed `here <https://github.com/kororo/excelcy/labels/enhancement>`__
 
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/3>`__] Add CLI support
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/4>`__] Add export outputs such as identified Entities, Tags
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add custom tags.
-    - [ ] Add report outputs such as identified entity, tag
     - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`__
     - [ ] Add exception subtext when there is multiple occurrence in text. (Google Pay is awesome Google product)
     - [ ] Add tag annotation in sheet: train
     - [ ] Add ref in data storage
+    - [ ] Improve speed and performance
     - [X] Add list of patterns easily (such as kitten breed.
     - [X] Add more data structure check in Excel and more warning messages
     - [X] Add plugin, otherwise just extends for now.
     - [X] [`link <https://github.com/kororo/excelcy/issues/2>`__] Improve experience
     - [X] [`link <https://github.com/kororo/excelcy/issues/1>`__] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [X] Add support to accept sentences to Excel
-    - [ ] Improve speed and performance
 
-- [ ] 100% coverage target with config (branch=on)
 - [X] Submit to Prodigy Universe
 
 FAQ
 ---
 
-**Q. What is that idx columns in the Excel sheet?**
-A. The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
+**What is that idx columns in the Excel sheet?**
 
-**Q. Can ExcelCy import/export to X, Y, Z data format?**
-A. ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__.
+The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
+
+**Can ExcelCy import/export to X, Y, Z data format?**
+
+ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__. It is possible to import/export data in any format.
+
+**ExcelCy accepts suggestions/ideas?**
+
+Yes! Please submit them into new issue with label "enhancement".
 
 Acknowledgement
 ---------------
 
 This project uses other awesome projects:
 
-- `attrs <https://github.com/python-attrs/attrs>`__: Python Classes Without Boilerplate
-- `pyexcel <https://github.com/pyexcel/pyexcel>`__:
+- `attrs <https://github.com/python-attrs/attrs>`__: Python Classes Without Boilerplate.
+- `pyexcel <https://github.com/pyexcel/pyexcel>`__: Single API for reading, manipulating and writing data in csv, ods, xls, xlsx and xlsm files.
 - `pyyaml <https://github.com/yaml/pyyaml>`__: The next generation YAML parser and emitter for Python.
-- `spacy <https://github.com/explosion/spaCy>`__
-- `textract <https://github.com/deanmalmgren/textract>`__
+- `spacy <https://github.com/explosion/spaCy>`__: Industrial-strength Natural Language Processing (NLP) with Python and Cython.
+- `textract <https://github.com/deanmalmgren/textract>`__: extract text from any document. no muss. no fuss.

@@ -7,16 +7,16 @@ from tests.test_base import BaseTestCase
 
 @attr.s()
 class Params1(Registry):
-    f1: int = field()
+    f1 = field()  # type: int
 
 
 class Params2(Registry):
-    f1: int = field(0)
+    f1 = field(0)  # type: int
 
 
 @attr.s()
 class Params3(Registry):
-    f1: int = field(0)
+    f1 = field(0)  # type: int
 
 
 def validate_f3(instance, attribute, value):
@@ -30,14 +30,14 @@ class Params4(Registry):
         S1 = 's1'
         S2 = 's2'
 
-    f1: int = field(validator=[attr.validators.instance_of(int)])
+    f1 = field(validator=[attr.validators.instance_of(int)])  # type: int
     f2 = field(validator=[attr.validators.in_(TestState)])
     f3 = field(validator=[validate_f3])
 
 
 @attr.s()
 class Params6(Registry):
-    f1: int = field(0)
+    f1 = field(0)  # type: int
 
 
 class RegistryTestCase(BaseTestCase):
@@ -86,8 +86,8 @@ class RegistryTestCase(BaseTestCase):
         with pytest.raises(ValueError) as excinfo:
             @attr.s()
             class TestParams5b(Registry):
-                f1: int = field(0)
+                f1 = field(0)  # type: int
                 # this is not allowed
-                f2: int = field()
+                f2 = field()  # type: int
 
         assert excinfo.type == ValueError
