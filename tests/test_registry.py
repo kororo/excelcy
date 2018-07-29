@@ -51,17 +51,17 @@ class RegistryTestCase(BaseTestCase):
         params = Params3()
         params.f1 = 1
         params.f2 = 2
-        self.assertDictEqual(params.items(), items)
+        self.assertDictEqual(params.as_dict(), items)
         # test init
         params = Params3(f1=1)
-        self.assertDictEqual(params.items(), items)
+        self.assertDictEqual(params.as_dict(), items)
         # test init 2
         params = Params3(**items)
-        self.assertDictEqual(params.items(), items)
+        self.assertDictEqual(params.as_dict(), items)
         # test extends
         params = Params3()
         params.extend(items)
-        self.assertDictEqual(params.items(), items)
+        self.assertDictEqual(params.as_dict(), items)
 
     def test_validator_params(self):
         # test basic validator

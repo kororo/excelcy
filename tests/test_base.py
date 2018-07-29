@@ -49,3 +49,11 @@ class BaseTestCase(TestCase):
             # verify if test given
             test = (entity_tests or {}).get(idx, set())
             assert test <= ents
+
+    def extract_storage(self, storage: dict):
+        data = storage.as_dict()
+        # clean up the offset
+        for _, train in data['train']['items'].items():
+            for _, gold in train['items'].items():
+                gold['offset'] = None
+        return data

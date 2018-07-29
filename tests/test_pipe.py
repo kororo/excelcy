@@ -30,5 +30,5 @@ class PipeTestCase(BaseTestCase):
 
         excelcy = ExcelCy.execute(file_path=self.get_test_data_path(fs_path='test_data_01.xlsx'))
         file_path = self.get_test_tmp_path(fs_path='test_data_01.xlsx')
-        excelcy.save(file_path=file_path)
+        excelcy.save_storage(file_path=file_path)
         excelcy.load(file_path=file_path)
