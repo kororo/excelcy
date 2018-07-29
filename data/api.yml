@@ -12,6 +12,23 @@ config:
   train_iteration: 2
   # X dropout rate based on https://spacy.io/usage/training#tips-dropout
   train_drop: 0.2
+# list API execution to control the journey
+phase:
+  items:
+    '1':
+      idx: 1
+      enabled: true
+      notes: null
+      fn: save_nlp
+      args:
+        key1: val1
+        key2: val2
+    '2':
+      idx: 2
+      enabled: true
+      notes: null
+      fn: discover
+      args: {}
 # data source to train
 source:
   items:
