@@ -1,4 +1,4 @@
-from excelcy import ExcelCy
+from excelcy import ExcelCy, cli
 from excelcy.storage import Config
 from tests.test_base import BaseTestCase
 
@@ -31,3 +31,21 @@ class ReadmeTestCase(BaseTestCase):
         excelcy.train()
         assert excelcy.nlp('Uber blew through $1 million a week').ents[0].label_ == 'ORG'
         assert excelcy.nlp('Robertus Johansyah is maintainer ExcelCy').ents[0].label_ == 'PERSON'
+
+    def test_readme_04(self):
+        """ Test: code snippet found in README.rst """
+
+        # load first and confirm Himalayas is PRODUCT
+        excelcy = ExcelCy.execute(file_path=self.get_test_data_path(fs_path='test_data_05.xlsx'))
+        gold = excelcy.storage.train.items.get('1').items.get('1.1')
+        assert gold.subtext == 'Himalayas' and gold.entity == 'PRODUCT'
+
+        # retrain and set the entity of Himalaya to PLACE
+        excelcy = ExcelCy.execute(file_path=self.get_test_data_path(fs_path='test_data_05a.xlsx'))
+        gold = excelcy.storage.train.items.get('1').items.get('1.1')
+        assert gold.subtext == 'Himalayas' and gold.entity == 'FAC'
+
+    def test_readme_05(self):
+        """ Test: code snippet found in README.rst """
+
+        cli.main(['', 'execute', self.get_test_data_path('test_data_01.xlsx')])

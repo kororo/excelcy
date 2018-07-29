@@ -1,7 +1,7 @@
 import os
 import random
-import tempfile
 import spacy
+from excelcy import utils
 from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
@@ -9,17 +9,29 @@ from excelcy.utils import odict
 
 
 class ExcelCy(object):
-    def __init__(self):
-        self.storage = Storage()
+    def __init__(self, storage_cls=None):
+        storage_cls = storage_cls or Storage
+        self.storage = storage_cls()  # type: Storage
         self._nlp = None
 
     @classmethod
     def execute(cls, file_path: str):
         excelcy = cls()
         excelcy.load(file_path=file_path)
-        excelcy.discover()
-        excelcy.prepare()
-        excelcy.train()
+
+        # prepare the phases
+        phases = excelcy.storage.phase
+        if len(phases.items) == 0:
+            # get default phases
+            for fn in ['discover', 'prepare', 'train', 'save_nlp']:
+                phases.add(fn=fn)
+
+        # execute the fns
+        for idx, phase in excelcy.storage.phase.items.items():
+            if phase.enabled:
+                fno = getattr(excelcy, phase.fn)
+                fno(**phase.args)
+
         return excelcy
 
     @property
@@ -27,6 +39,18 @@ class ExcelCy(object):
         if not self._nlp:
             self._nlp = self.create_nlp()
         return self._nlp
+
+    def resolve_path(self, file_path: str = None):
+        if file_path:
+            file_path = self.storage.resolve_value(value=file_path)
+            return os.path.join(self.storage.base_path, file_path)
+        return None
+
+    def resolve_ensure_path(self, file_path: str = None):
+        file_path = self.resolve_path(file_path=file_path)
+        if file_path:
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        return file_path
 
     def load(self, file_path: str):
         """
@@ -39,16 +63,24 @@ class ExcelCy(object):
             raise ValueError(Errors.E001)
         return self
 
-    def save(self, file_path: str):
+    def save_storage(self, file_path: str = None):
         self.storage.save(file_path=file_path)
         return self
 
-    def resolve_path(self, file_path: str = None):
+    def save_nlp(self, file_path: str = None):
+        nlp = self.nlp
+
+        # remove the pipe because it is not useful for other purposes rather than learning
+        if EXCELCY_MATCHER in nlp.pipe_names:
+            nlp.remove_pipe(EXCELCY_MATCHER)
+
+        # parse and ensure path
+        file_path = file_path or self.storage.nlp_path
+        file_path = self.resolve_ensure_path(file_path=file_path)
+
+        # save the model
         if file_path:
-            tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
-            file_path = file_path.replace('[tmp]', tmp_path)
-            return os.path.join(self.storage.base_path, file_path)
-        return None
+            nlp.to_disk(file_path)
 
     def create_nlp(self):
         """
@@ -56,10 +88,9 @@ class ExcelCy(object):
 
         :return: NLP object
         """
+
         # parse path and ensure exists
-        self.storage.nlp_path = self.resolve_path(file_path=self.storage.config.nlp_name)
-        if self.storage.nlp_path:
-            os.makedirs(os.path.dirname(self.storage.nlp_path), exist_ok=True)
+        self.storage.nlp_path = self.resolve_ensure_path(file_path=self.storage.config.nlp_name)
 
         try:
             # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from spaCy.
@@ -95,6 +126,13 @@ class ExcelCy(object):
         new_source = Source(idx=source.idx, kind='text', value=value)
         self._discover_text(new_source)
 
+    def _discover_prodigy(self, source: Source):
+        """
+        Apply Prodigy dataset, described  here
+        :param source:
+        :return:
+        """
+
     def discover(self):
         """
         Start load source data, iterate one by one and parse into sentences
@@ -115,12 +153,18 @@ class ExcelCy(object):
     def _prepare_init_regex(self, prepare: Prepare):
         self._prepare_init_base(prepare=prepare)
 
+    def _prepare_init_file(self, prepare: Prepare):
+        wb = utils.excel_load(file_path=self.resolve_path(prepare.value))
+        for item in wb.get('prepare', []):
+            prepare = Prepare.make(items=item)
+            self._prepare_init_base(prepare=prepare)
+
     def _prepare_parse(self, train: Train):
         # parsing pre-identified Entity based on current data model
         doc = self.nlp(train.text)
         for ent in doc.ents:
-            subtext, span, label = ent.text, '%s,%s' % (ent.start_char, ent.end_char), ent.label_
-            train.add(subtext=subtext, span=span, entity=label)
+            subtext, offset, label = ent.text, '%s,%s' % (ent.start_char, ent.end_char), ent.label_
+            train.add(subtext=subtext, offset=offset, entity=label)
 
     def prepare(self):
         """
@@ -161,18 +205,18 @@ class ExcelCy(object):
         for idx, train in self.storage.train.items.items():
             entities = odict()
             for gold_idx, gold in train.items.items():
-                # ensure span is valid positions
-                if not gold.span:
+                # ensure offset is valid positions
+                if not gold.offset:
                     offset = train.text.find(gold.subtext)
                     if offset != -1:
-                        gold.span = '%s,%s' % (offset, offset + len(gold.subtext))
-                span = gold.span.replace(' ', '').strip()
-                if not entities.get(span):
-                    entities[span] = gold.entity
+                        gold.offset = '%s,%s' % (offset, offset + len(gold.subtext))
+                offset = gold.offset.replace(' ', '').strip()
+                if not entities.get(offset):
+                    entities[offset] = gold.entity
             trains[idx] = {'entities': []}
-            for span, entity in entities.items():
-                spans = span.split(',')
-                trains[idx]['entities'].append([int(spans[0]), int(spans[1]), entity])
+            for offset, entity in entities.items():
+                offsets = offset.split(',')
+                trains[idx]['entities'].append([int(offsets[0]), int(offsets[1]), entity])
 
         # train now
         nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
@@ -184,10 +228,14 @@ class ExcelCy(object):
                 train = trains[idx]
                 nlp.update([text], [train], drop=self.storage.config.train_drop, sgd=optimizer)
 
-        # auto save if required and nlp_path is defined
-        if self.storage.config.train_autosave and self.storage.nlp_path:
-            if EXCELCY_MATCHER in nlp.pipe_names:
-                nlp.remove_pipe(EXCELCY_MATCHER)
-            nlp.to_disk(self.storage.nlp_path)
-
         return self
+
+    def retest(self):
+        for idx, train in self.storage.train.items.items():
+            # clear before retest the entities
+            train.items = odict()
+            # it is the same concept as prepare
+            self._prepare_parse(train=train)
+
+    def export_train(self, file_path: str):
+        self.storage.save(file_path=self.resolve_ensure_path(file_path), kind=['train'])

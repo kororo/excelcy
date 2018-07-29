@@ -38,7 +38,8 @@ setup(
     url='https://github.com/kororo/excelcy',
     license='MIT',
     keywords=[
-        'spacy', 'spacy-pipeline', 'spacy-nlp', 'nlp', 'python', 'python3', 'entity', 'training', 'excel', 'xlsx', 'spacy-extensions'
+        'spacy', 'spacy-pipeline', 'spacy-nlp', 'nlp', 'python', 'python3', 'entity', 'training', 'excel', 'xlsx',
+        'spacy-extensions'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -54,4 +55,7 @@ setup(
     install_requires=REQUIRES,
     tests_require=['coverage', 'pytest'],
     packages=find_packages(),
+    entry_points={
+        'console_scripts': ['excelcy=excelcy.cli:main'],
+    }
 )
