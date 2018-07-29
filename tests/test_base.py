@@ -45,14 +45,14 @@ class BaseTestCase(TestCase):
             train_ents = set([(gold.subtext, gold.entity) for _, gold in train.items.items()])
             doc = nlp(train.text)
             ents = set([(ent.text, ent.label_) for ent in doc.ents])
-            # verify based on data
-            assert train_ents <= ents
-            # verify if test given
-            test = (entity_tests or {}).get(idx, set())
-            assert test <= ents
+            for ent in ents:
+                assert ent in train_ents
 
     def extract_storage(self, storage: Storage):
         data = storage.as_dict()
+        # remove phase
+        if data.get('phase'):
+            del data['phase']
         # clean up the offset
         for _, train in data['train']['items'].items():
             for _, gold in train['items'].items():

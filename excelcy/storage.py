@@ -273,7 +273,8 @@ class Storage(Registry):
 
     def _save_yml(self, file_path: str, kind: list):
         data = self.as_dict()
-        for name, _ in data.items():
+        names = list(data.keys())
+        for name in names:
             if name not in kind:
                 del data[name]
         utils.yaml_save(file_path=file_path, data=data)
@@ -328,7 +329,7 @@ class Storage(Registry):
         utils.excel_save(sheets=sheets, file_path=file_path)
 
     def save(self, file_path: str, kind: list = None):
-        kind = kind or ['phase', 'prepare', 'train', 'config']
+        kind = kind or ['phase', 'source', 'prepare', 'train', 'config']
         file_name, file_ext = os.path.splitext(file_path)
         processor = getattr(self, '_save_%s' % file_ext[1:], None)
         if processor:

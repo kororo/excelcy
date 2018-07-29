@@ -30,11 +30,4 @@ class ExcelCyTestCase(BaseTestCase):
     def test_execute_phases(self):
         """ Test: executing phases """
 
-        excelcy = ExcelCy.execute(file_path=self.get_test_data_path(fs_path='test_data_04.xlsx'))
-        file_path = self.get_test_tmp_path(fs_path='test_data_04.xlsx')
-        excelcy.save_storage(file_path=file_path)
-
-        data = self.extract_storage(storage=excelcy.storage)
-        excelcy.load(file_path=file_path)
-        data2 = self.extract_storage(storage=excelcy.storage)
-        assert data == data2
+        self.assert_training(file_path=self.get_test_data_path('test_data_04.xlsx'))
