@@ -1,7 +1,5 @@
-import datetime
 import os
 import random
-import tempfile
 import spacy
 from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
@@ -27,9 +25,8 @@ class ExcelCy(object):
                 phases.add(fn=fn)
 
         # execute the fns
-        fns = ['save_nlp', 'discover', 'prepare', 'export_entity', 'save_nlp', 'save_storage']
         for idx, phase in excelcy.storage.phase.items.items():
-            if phase.enabled and phase.fn in fns:
+            if phase.enabled:
                 fno = getattr(excelcy, phase.fn)
                 fno(**phase.args)
 
@@ -42,12 +39,8 @@ class ExcelCy(object):
         return self._nlp
 
     def resolve_path(self, file_path: str = None):
-        now = datetime.datetime.now()
         if file_path:
-            tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
-            file_path = file_path.replace('[tmp]', tmp_path)
-            file_path = file_path.replace('[date]', now.strftime("%Y%m%d"))
-            file_path = file_path.replace('[time]', now.strftime("%H%M%S"))
+            file_path = self.storage.resolve_value(value=file_path)
             return os.path.join(self.storage.base_path, file_path)
         return None
 

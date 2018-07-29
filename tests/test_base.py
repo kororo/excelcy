@@ -4,6 +4,7 @@ import tempfile
 from unittest import TestCase
 
 from excelcy import ExcelCy
+from excelcy.storage import Storage
 
 
 class BaseTestCase(TestCase):
@@ -50,7 +51,7 @@ class BaseTestCase(TestCase):
             test = (entity_tests or {}).get(idx, set())
             assert test <= ents
 
-    def extract_storage(self, storage: dict):
+    def extract_storage(self, storage: Storage):
         data = storage.as_dict()
         # clean up the offset
         for _, train in data['train']['items'].items():

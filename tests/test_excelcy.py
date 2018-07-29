@@ -25,7 +25,7 @@ class ExcelCyTestCase(BaseTestCase):
         data = self.extract_storage(storage=excelcy.storage)
         excelcy.load(file_path=file_path)
         data2 = self.extract_storage(storage=excelcy.storage)
-        
+
         assert data == data2
 
     def test_execute_phases(self):

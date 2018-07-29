@@ -1,4 +1,7 @@
+import copy
+import datetime
 import os
+import tempfile
 import typing
 import attr
 from excelcy import utils
@@ -129,6 +132,21 @@ class Storage(Registry):
     prepare = field(default=attr.Factory(Prepares))  # type: Prepares
     train = field(default=attr.Factory(Trains))  # type: Trains
     config = field(default=attr.Factory(Config))  # type: Config
+
+    def resolve_value(self, value: str):
+        if type(value) == str:
+            now = datetime.datetime.now()
+            tmp_path = os.environ.get('EXCELCY_TEMP_PATH', tempfile.gettempdir())
+            value = value.replace('[tmp]', tmp_path)
+            if self.base_path:
+                value = value.replace('[base_path]', self.base_path)
+            if self.nlp_path:
+                value = value.replace('[nlp_path]', self.nlp_path)
+            if self.storage_path:
+                value = value.replace('[storage_path]', self.storage_path)
+            value = value.replace('[date]', now.strftime("%Y%m%d"))
+            value = value.replace('[time]', now.strftime("%H%M%S"))
+        return value
 
     def __attrs_post_init__(self):
         super(Storage, self).__attrs_post_init__()
@@ -300,7 +318,6 @@ class Storage(Registry):
 
     def save(self, file_path: str):
         file_name, file_ext = os.path.splitext(file_path)
-        self.base_path = os.path.dirname(file_path)
         processor = getattr(self, '_save_%s' % file_ext[1:], None)
         if processor:
             processor(file_path=file_path)
@@ -311,9 +328,15 @@ class Storage(Registry):
         :param data: Data in ordereddict
         """
 
+        # copy the data
+        data = copy.deepcopy(data)
+
         # parse phase
         self.phase = Phases()
         for idx, item in data.get('phase', {}).get('items', {}).items():
+            args = item.get('args', odict())
+            for key, val in args.items():
+                args[key] = self.resolve_value(value=val)
             phase = Phase.make(items=item)
             self.phase.add_item(item=phase)
 
