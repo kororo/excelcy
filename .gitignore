@@ -13,3 +13,5 @@ tests/data/nlp_test
 .tox
 *\.coverage\.*
 dist/
+tests/data/export
+tests/data/nlp

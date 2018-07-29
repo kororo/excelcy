@@ -1,5 +1,4 @@
 from excelcy import ExcelCy
-from excelcy.utils import odict
 from tests.test_base import BaseTestCase
 
 
