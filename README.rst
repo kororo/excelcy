@@ -46,13 +46,14 @@ The **TRAIN_DATA**, describes sentences and annotated entities to be trained. It
     excelcy = ExcelCy.execute(file_path='https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx')
     # use the nlp object as per spaCy API
     doc = excelcy.nlp('Google rebrands its business apps')
-    # or save it for faster bootstrap for application
+    # or save_storage it for faster bootstrap for application
     excelcy.nlp.to_disk('/model')
+
 
 ExcelCy is Friendly
 -------------------
 
-ExcelCy training is divided into phases, the example Excel file can be found in `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__ :
+By default, ExcelCy training is divided into phases, the example Excel file can be found in `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__:
 
 1. Discovery
 ^^^^^^^^^^^^
@@ -65,11 +66,13 @@ The first phase is to collect sentences from data source in sheet "source". The 
 2. Preparation
 ^^^^^^^^^^^^^^
 
-Next phase, the sentences will be analysed in sheet "prepare", based on:
+Next phase, the Gold annotation needs to be defined in sheet "prepare", based on:
 
 - Current Data Model: Using spaCy API of **nlp(sentence).ents**
 - Phrase pattern: Robertus Johansyah, Uber, Google, Amazon
 - Regex pattern: ^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$
+
+All annotations in here are considered as Gold annotations, which described in `here <https://spacy.io/usage/training#example-new-entity-type>`__.
 
 3. Training
 ^^^^^^^^^^^
@@ -80,6 +83,29 @@ Main phase of NER training, which described in `Simple Style Training <https://s
 ^^^^^^^^^^^^^^^^
 
 The last phase, is to test/save the results and repeat the phases if required.
+
+ExcelCy is Flexible
+-------------------
+
+Need more specific export and phases? It is possible to control it using phase API. This is the illustration of the real-world scenario:
+
+1. Train from `tests/data/test_data_05.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx>`__
+
+    .. code-block:: bash
+
+        # Note: this will create a directory and file "export/train_05.xlsx"
+        $ excelcy execute https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx
+
+2. Open the result in "export/train_05.xlsx", it shows all identified sentences from source given. However, there is error in the "Himalayas" as identified as "PRODUCT".
+3. To fix this, add phrase matcher for "Himalayas = FAC". It is illustrated in `tests/data/test_data_05a.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05a.xlsx>`__
+4. Train again and check the result in "export/train_05a.xlsx"
+
+    .. code-block:: bash
+
+        # Note: this will create a directory and file "export/train_05a.xlsx"
+        $ excelcy execute https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05a.xlsx
+
+5. Check the result that there is backed up nlp data model in "nlp" and the result is corrected in "export/train_05a.xlsx"
 
 ExcelCy is Comprehensive
 ------------------------
@@ -95,26 +121,26 @@ Under the hood, ExcelCy has strong and well-defined data storage. At any given p
     # excelcy.load(file_path='test_data_01.xlsx')
     # or define manually
     excelcy.storage.config = Config(nlp_base='en_core_web_sm', train_iteration=2, train_drop=0.2)
-    print(json.dumps(excelcy.storage.items(), indent=2))
+    print(json.dumps(excelcy.storage.as_dict(), indent=2))
 
     # add sources
     excelcy.storage.source.add(kind='text', value='Robertus Johansyah is the maintainer ExcelCy')
     excelcy.storage.source.add(kind='textract', value='tests/data/source/test_source_01.txt')
     excelcy.discover()
-    print(json.dumps(excelcy.storage.items(), indent=2))
+    print(json.dumps(excelcy.storage.as_dict(), indent=2))
 
     # add phrase matcher Robertus Johansyah -> PERSON
     excelcy.storage.prepare.add(kind='phrase', value='Robertus Johansyah', entity='PERSON')
     excelcy.prepare()
-    print(json.dumps(excelcy.storage.items(), indent=2))
+    print(json.dumps(excelcy.storage.as_dict(), indent=2))
 
     # train it
     excelcy.train()
-    print(json.dumps(excelcy.storage.items(), indent=2))
+    print(json.dumps(excelcy.storage.as_dict(), indent=2))
 
     # test it
     doc = excelcy.nlp('Robertus Johansyah is maintainer ExcelCy')
-    print(json.dumps(excelcy.storage.items(), indent=2))
+    print(json.dumps(excelcy.storage.as_dict(), indent=2))
 
 
 Features
@@ -150,10 +176,21 @@ To train the spaCy model:
 
 Note: `tests/data/test_data_01.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx>`__
 
+CLI
+---
+
+ExelCy has basic CLI command for execute:
+
+.. code-block:: bash
+
+    $ excelcy execute https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx
+
+
 Data Definition
 ---------------
 
 ExcelCy has data definition which expressed in `api.yml <https://github.com/kororo/excelcy/raw/master/data/api.yml>`__. As long as, data given in this specific format and structure, ExcelCy will able to support any type of data format. Check out, the Excel file format in `api.xlsx <https://github.com/kororo/excelcy/raw/master/data/api.xlsx>`__. Data classes are defined with `attrs <https://github.com/python-attrs/attrs>`__, check in `storage.py <https://github.com/kororo/excelcy/raw/master/excelcy/storage.py>`__ for more detail.
+
 
 TODO
 ----
@@ -162,8 +199,8 @@ TODO
 
 - [ ] More features and enhancements listed `here <https://github.com/kororo/excelcy/labels/enhancement>`__
 
-    - [ ] [`link <https://github.com/kororo/excelcy/issues/3>`__] Add CLI support
-    - [ ] [`link <https://github.com/kororo/excelcy/issues/4>`__] Add export outputs such as identified Entities, Tags
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/5>`__] JSONL integration with Prodigy
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/6>`__] Add enabled, notes columns
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add custom tags.
     - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`__
@@ -174,9 +211,12 @@ TODO
     - [X] Add list of patterns easily (such as kitten breed.
     - [X] Add more data structure check in Excel and more warning messages
     - [X] Add plugin, otherwise just extends for now.
+    - [X] [`link <https://github.com/kororo/excelcy/issues/4>`__] Add export outputs such as identified Entities, Tags
+    - [X] [`link <https://github.com/kororo/excelcy/issues/3>`__] Add CLI support
     - [X] [`link <https://github.com/kororo/excelcy/issues/2>`__] Improve experience
     - [X] [`link <https://github.com/kororo/excelcy/issues/1>`__] Add more file format such as YML, JSON. Make standardise and well documented on data structure.
     - [X] Add support to accept sentences to Excel
+
 
 - [X] Submit to Prodigy Universe
 
@@ -185,7 +225,7 @@ FAQ
 
 **What is that idx columns in the Excel sheet?**
 
-The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source".
+The idea is to give reference between two things. Imagine in sheet "train", like to know where the sentence generated from in sheet "source". And also, the nature of Excel, you can sort things, this is the safe guard to keep things in the correct order.
 
 **Can ExcelCy import/export to X, Y, Z data format?**
 
