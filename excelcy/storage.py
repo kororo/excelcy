@@ -27,7 +27,7 @@ class BaseItemListRegistry(Registry):
     items = field(default=attr.Factory(odict))  # type: typing.Dict[str, Registry]
 
     def add_item(self, item):
-        item.idx = len(self.items) if not item.idx or item.idx == str(None) else item.idx
+        item.idx = len(self.items) + 1 if not item.idx or item.idx == str(None) else item.idx
         self.items[str(item.idx)] = item
         return item
 
@@ -110,7 +110,7 @@ class Train(BaseItemRegistry):
         return item
 
     def add_item(self, item: Gold):
-        item.idx = '%s.%s' % (self.idx, len(self.items)) if not item.idx or item.idx == str(None) else item.idx
+        item.idx = '%s.%s' % (self.idx, len(self.items) + 1) if not item.idx or item.idx == str(None) else item.idx
         self.items[str(item.idx)] = item
         return item
 
@@ -271,56 +271,68 @@ class Storage(Registry):
         if processor:
             processor(file_path=file_path)
 
-    def _save_yml(self, file_path: str):
-        utils.yaml_save(file_path=file_path, data=self.as_dict())
+    def _save_yml(self, file_path: str, kind: list):
+        data = self.as_dict()
+        for name, _ in data.items():
+            if name not in kind:
+                del data[name]
+        utils.yaml_save(file_path=file_path, data=data)
 
-    def _save_xlsx(self, file_path: str):
+    def _save_xlsx(self, file_path: str, kind: list):
         def convert(header: list, registry: Registry) -> list:
             return [getattr(registry, key, None) for key in header]
 
         sheets = odict()
 
         # build phase sheet
-        headers = ['idx', 'enabled', 'fn', 'args', 'notes']
-        sheets['phase'] = [headers]
-        for _, phase in self.phase.items.items():
-            val = convert(sheets['phase'][0], phase)
-            val[headers.index('args')] = ', '.join(['%s=%s' % (k, v) for k, v in val[headers.index('args')].items()])
-            sheets['phase'].append(val)
+        if 'phase' in kind:
+            headers = ['idx', 'enabled', 'fn', 'args', 'notes']
+            sheets['phase'] = [headers]
+            for _, phase in self.phase.items.items():
+                val = convert(sheets['phase'][0], phase)
+                val[headers.index('args')] = ', '.join(
+                    ['%s=%s' % (k, v) for k, v in val[headers.index('args')].items()])
+                sheets['phase'].append(val)
+
         # build source sheet
-        headers = ['idx', 'enabled', 'kind', 'value', 'notes']
-        sheets['source'] = [headers]
-        for _, source in self.source.items.items():
-            sheets['source'].append(convert(sheets['source'][0], source))
+        if 'source' in kind:
+            headers = ['idx', 'enabled', 'kind', 'value', 'notes']
+            sheets['source'] = [headers]
+            for _, source in self.source.items.items():
+                sheets['source'].append(convert(sheets['source'][0], source))
 
         # build prepare sheet
-        headers = ['idx', 'enabled', 'kind', 'value', 'entity', 'notes']
-        sheets['prepare'] = [headers]
-        for _, prepare in self.prepare.items.items():
-            sheets['prepare'].append(convert(sheets['prepare'][0], prepare))
+        if 'prepare' in kind:
+            headers = ['idx', 'enabled', 'kind', 'value', 'entity', 'notes']
+            sheets['prepare'] = [headers]
+            for _, prepare in self.prepare.items.items():
+                sheets['prepare'].append(convert(sheets['prepare'][0], prepare))
 
         # build train sheet
-        headers = ['idx', 'enabled', 'text', 'subtext', 'entity', 'notes']
-        sheets['train'] = [headers]
-        for _, train in self.train.items.items():
-            sheets['train'].append(convert(sheets['train'][0], train))
-            for _, gold in train.items.items():
-                sheets['train'].append(convert(sheets['train'][0], gold))
+        if 'train' in kind:
+            headers = ['idx', 'enabled', 'text', 'subtext', 'entity', 'notes']
+            sheets['train'] = [headers]
+            for _, train in self.train.items.items():
+                sheets['train'].append(convert(sheets['train'][0], train))
+                for _, gold in train.items.items():
+                    sheets['train'].append(convert(sheets['train'][0], gold))
 
         # build config sheet
-        headers = ['name', 'value']
-        sheets['config'] = [headers]
-        for config_name, config_value in self.config.as_dict().items():
-            sheets['config'].append([config_name, config_value])
+        if 'config' in kind:
+            headers = ['name', 'value']
+            sheets['config'] = [headers]
+            for config_name, config_value in self.config.as_dict().items():
+                sheets['config'].append([config_name, config_value])
 
         # save
         utils.excel_save(sheets=sheets, file_path=file_path)
 
-    def save(self, file_path: str):
+    def save(self, file_path: str, kind: list = None):
+        kind = kind or ['phase', 'prepare', 'train', 'config']
         file_name, file_ext = os.path.splitext(file_path)
         processor = getattr(self, '_save_%s' % file_ext[1:], None)
         if processor:
-            processor(file_path=file_path)
+            processor(file_path=file_path, kind=kind)
 
     def parse(self, data: odict):
         """

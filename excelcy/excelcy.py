@@ -1,6 +1,7 @@
 import os
 import random
 import spacy
+from excelcy import utils
 from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
@@ -8,8 +9,9 @@ from excelcy.utils import odict
 
 
 class ExcelCy(object):
-    def __init__(self):
-        self.storage = Storage()
+    def __init__(self, storage_cls=None):
+        storage_cls = storage_cls or Storage
+        self.storage = storage_cls()  # type: Storage
         self._nlp = None
 
     @classmethod
@@ -151,6 +153,12 @@ class ExcelCy(object):
     def _prepare_init_regex(self, prepare: Prepare):
         self._prepare_init_base(prepare=prepare)
 
+    def _prepare_init_file(self, prepare: Prepare):
+        wb = utils.excel_load(file_path=self.resolve_path(prepare.value))
+        for item in wb.get('prepare', []):
+            prepare = Prepare.make(items=item)
+            self._prepare_init_base(prepare=prepare)
+
     def _prepare_parse(self, train: Train):
         # parsing pre-identified Entity based on current data model
         doc = self.nlp(train.text)
@@ -222,5 +230,12 @@ class ExcelCy(object):
 
         return self
 
-    def export_entity(self, file_path: str, label: str):
-        pass
+    def retest(self):
+        for idx, train in self.storage.train.items.items():
+            # clear before retest the entities
+            train.items = odict()
+            # it is the same concept as prepare
+            self._prepare_parse(train=train)
+
+    def export_train(self, file_path: str):
+        self.storage.save(file_path=self.resolve_ensure_path(file_path), kind=['train'])
