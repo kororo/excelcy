@@ -105,7 +105,7 @@ Need more specific export and phases? It is possible to control it using phase A
     .. code-block:: bash
 
         # download the dataset
-        $ wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx
+        $ wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05a.xlsx
         # this will create a directory "nlp/data" and file "export/train_05a.xlsx"
         $ excelcy execute test_data_05a.xlsx
 
