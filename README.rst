@@ -93,8 +93,10 @@ Need more specific export and phases? It is possible to control it using phase A
 
     .. code-block:: bash
 
-        # Note: this will create a directory and file "export/train_05.xlsx"
-        $ excelcy execute https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx
+        # download the dataset
+        $ wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx
+        # this will create a directory and file "export/train_05.xlsx"
+        $ excelcy execute test_data_05.xlsx
 
 2. Open the result in "export/train_05.xlsx", it shows all identified sentences from source given. However, there is error in the "Himalayas" as identified as "PRODUCT".
 3. To fix this, add phrase matcher for "Himalayas = FAC". It is illustrated in `tests/data/test_data_05a.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05a.xlsx>`__
@@ -102,10 +104,13 @@ Need more specific export and phases? It is possible to control it using phase A
 
     .. code-block:: bash
 
-        # Note: this will create a directory and file "export/train_05a.xlsx"
-        $ excelcy execute https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05a.xlsx
+        # download the dataset
+        $ wget https://github.com/kororo/excelcy/raw/master/tests/data/test_data_05.xlsx
+        # this will create a directory "nlp/data" and file "export/train_05a.xlsx"
+        $ excelcy execute test_data_05a.xlsx
 
 5. Check the result that there is backed up nlp data model in "nlp" and the result is corrected in "export/train_05a.xlsx"
+6. Keep training the data model, if there is unexpected behaviour, there is backup data model in case needed.
 
 ExcelCy is Comprehensive
 ------------------------
@@ -200,7 +205,7 @@ TODO
 - [ ] More features and enhancements listed `here <https://github.com/kororo/excelcy/labels/enhancement>`__
 
     - [ ] [`link <https://github.com/kororo/excelcy/issues/5>`__] JSONL integration with Prodigy
-    - [ ] [`link <https://github.com/kororo/excelcy/issues/6>`__] Add enabled, notes columns
+    - [ ] [`link <https://github.com/kororo/excelcy/issues/7>`__] Add logging and the settings
     - [ ] Add special case for tokenisation described `here <https://spacy.io/usage/linguistic-features#special-cases>`__
     - [ ] Add custom tags.
     - [ ] Add classifier text training described `here <https://spacy.io/usage/training#textcat>`__
@@ -211,6 +216,7 @@ TODO
     - [X] Add list of patterns easily (such as kitten breed.
     - [X] Add more data structure check in Excel and more warning messages
     - [X] Add plugin, otherwise just extends for now.
+    - [X] [`link <https://github.com/kororo/excelcy/issues/6>`__] Add enabled, notes columns
     - [X] [`link <https://github.com/kororo/excelcy/issues/4>`__] Add export outputs such as identified Entities, Tags
     - [X] [`link <https://github.com/kororo/excelcy/issues/3>`__] Add CLI support
     - [X] [`link <https://github.com/kororo/excelcy/issues/2>`__] Improve experience

@@ -1,6 +1,6 @@
 # Change Logs
 
-## 0.3.0
+## 0.3.1
 - Add Phase API
 - Less forgiving data storage (if non recognised property added)
 - Add simple CLI
