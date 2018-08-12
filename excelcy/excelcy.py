@@ -1,4 +1,5 @@
 import os
+import warnings
 import random
 import spacy
 from excelcy import utils
@@ -6,6 +7,12 @@ from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
 from excelcy.utils import odict
+
+
+# remove warnings from numpy
+# reference: https://stackoverflow.com/questions/40845304/runtimewarning-numpy-dtype-size-changed-may-indicate-binary-incompatibility
+warnings.filterwarnings('ignore', message='numpy.dtype size changed')
+warnings.filterwarnings('ignore', message='numpy.ufunc size changed')
 
 
 class ExcelCy(object):
