@@ -41,6 +41,8 @@ The **TRAIN_DATA**, describes sentences and annotated entities to be trained. It
 
 .. code-block:: python
 
+    # download the en model from spacy
+    # python -m spacy download en"
     from excelcy import ExcelCy
     # collect sentences, annotate Entities and train NER using spaCy
     excelcy = ExcelCy.execute(file_path='https://github.com/kororo/excelcy/raw/master/tests/data/test_data_01.xlsx')

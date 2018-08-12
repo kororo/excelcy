@@ -9,17 +9,17 @@ from excelcy.registry import Registry, field
 from excelcy.utils import odict
 
 
-@attr.s
+@attr.s()
 class BaseItemRegistry(Registry):
     """
     Base class for all item alike data
     """
-    idx = field(default=None)  # type: int
+    idx = field(default=None)  # type: str
     enabled = field(default=True)  # type: bool
     notes = field(default=None)  # type: str
 
 
-@attr.s
+@attr.s()
 class BaseItemListRegistry(Registry):
     """
     Base class for all list item alike data
