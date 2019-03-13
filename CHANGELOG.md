@@ -1,5 +1,12 @@
 # Change Logs
 
+## 0.3.3
+- Update requirements.txt
+- Improve docs
+
+## 0.3.2
+- Fix attrs dependencies
+
 ## 0.3.1
 - Add Phase API
 - Less forgiving data storage (if non recognised property added)

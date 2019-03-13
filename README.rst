@@ -65,6 +65,8 @@ The first phase is to collect sentences from data source in sheet "source". The 
 - Text: Direct sentence values.
 - Files: PDF, DOCX, PPT, PNG or JPG will be parsed using `textract <https://github.com/deanmalmgren/textract>`__.
 
+Note: See textract source examples in `tests/data/test_data_03.xlsx <https://github.com/kororo/excelcy/raw/master/tests/data/test_data_03.xlsx>`__
+
 2. Preparation
 ^^^^^^^^^^^^^^
 
@@ -238,6 +240,10 @@ The idea is to give reference between two things. Imagine in sheet "train", like
 **Can ExcelCy import/export to X, Y, Z data format?**
 
 ExcelCy has strong and well-defined data storage, thanks to `attrs <https://github.com/python-attrs/attrs>`__. It is possible to import/export data in any format.
+
+**Error: ModuleNotFoundError: No module named 'pip'**
+
+There are lots of possibility on this. Try to lower pip version (it was buggy for version 19.0.3).
 
 **ExcelCy accepts suggestions/ideas?**
 
