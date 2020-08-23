@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "excelcy"
-version = "0.4.0"
+version = "0.4.1"
 description = "Excel Integration with SpaCy. Includes, Entity training, Entity matcher pipe."
 authors = ["kororo <kororo@users.noreply.github.com>"]
 license = "MIT"
@@ -13,7 +13,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 attrs = "^20.1.0"
 pyexcel = "^0.6.4"
 pyexcel-xlsx = "^0.5.8"

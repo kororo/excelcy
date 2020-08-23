@@ -226,6 +226,23 @@ Check out, the Excel file format in [api.xlsx](https://github.com/kororo/excelcy
 Data classes are defined with [attrs](https://github.com/python-attrs/attrs),
 check in [storage.py](https://github.com/kororo/excelcy/raw/master/excelcy/storage.py) for more detail.
 
+Publishing
+----------
+```shell script
+# this is note for contributors
+# ensure locally tests all running
+npm run test
+
+# prepare for new version
+poetry version 0.4.1
+npm run export
+
+# make changes in the git, especially release branch and check in the travis
+# https://travis-ci.com/github/kororo/excelcy
+
+# if all goes well, push to master
+
+```
 FAQ
 ---
 
