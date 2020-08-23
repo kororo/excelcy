@@ -1,5 +1,8 @@
 # Change Logs
 
+## 0.4.1
+- Update travis and requirements.txt
+
 ## 0.4.0
 - Add poetry
 - Fix https://github.com/kororo/excelcy/issues/16
