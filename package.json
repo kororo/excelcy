@@ -1,0 +1,22 @@
+{
+  "name": "excelcy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon",
+    "test": "tox",
+    "export": "poetry export -f requirements.txt > requirements.txt",
+    "deploy": "poetry update && poetry build && poetry publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kororo/excelcy.git"
+  },
+  "author": "kororo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kororo/excelcy/issues"
+  },
+  "homepage": "https://github.com/kororo/excelcy#readme"
+}

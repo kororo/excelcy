@@ -37,6 +37,7 @@ class Config(Registry):
     """
     Storage for config in ExcelCy
     """
+    nlp_obj = field(default=None, repr=False)
     nlp_base = field(default=None)  # type: str
     nlp_name = field(default=None)  # type: str
     source_language = field(default='en')  # type: str
@@ -56,7 +57,8 @@ class Phases(BaseItemListRegistry):
     items = field(default=attr.Factory(odict))  # type: typing.Dict[str, Phase]
 
     def add(self, fn: str, args: dict = None, idx: str = None):
-        item = Phase(fn=fn, args=args or odict(), idx=str(idx))
+        item = Phase()
+        item.fn, item.args, item.idx = fn, args if args else {}, idx
         self.add_item(item=item)
         return item
 
@@ -70,7 +72,8 @@ class Source(BaseItemRegistry):
 @attr.s()
 class Sources(BaseItemListRegistry):
     def add(self, kind: str, value: str, idx: str = None):
-        item = Source(kind=kind, value=value, idx=str(idx))
+        item = Source()
+        item.kind, item.value, item.idx = kind, value, str(idx)
         self.add_item(item=item)
         return item
 
@@ -87,7 +90,8 @@ class Prepares(BaseItemListRegistry):
     items = field(default=attr.Factory(odict))  # type: typing.Dict[str, Prepare]
 
     def add(self, kind: str, value, entity: str, idx: str = None):
-        item = Prepare(kind=kind, value=value, entity=entity, idx=str(idx))
+        item = Prepare()
+        item.kind, item.value, item.entity, item.idx = kind, value, entity, str(idx)
         self.add_item(item=item)
         return item
 
@@ -105,7 +109,8 @@ class Train(BaseItemRegistry):
     items = field(default=attr.Factory(odict))  # type: typing.Dict[str, Gold]
 
     def add(self, subtext: str, entity: str, offset: str = None, idx: str = None):
-        item = Gold(subtext=subtext, offset=offset, entity=entity, idx=str(idx))
+        item = Gold()
+        item.subtext, item.offset, item.entity, item.idx = subtext, offset, entity, str(idx)
         self.add_item(item=item)
         return item
 
@@ -120,7 +125,8 @@ class Trains(BaseItemListRegistry):
     items = field(default=attr.Factory(odict))  # type: typing.Dict[str, Train]
 
     def add(self, text: str, idx: str = None):
-        item = Train(text=text, idx=str(idx))
+        item = Train()
+        item.text, item.idx = text, str(idx)
         self.add_item(item=item)
         return item
 
