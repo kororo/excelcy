@@ -1,8 +1,6 @@
 import os
-import shutil
 import tempfile
 from unittest import TestCase
-
 from excelcy import ExcelCy
 from excelcy.storage import Storage
 

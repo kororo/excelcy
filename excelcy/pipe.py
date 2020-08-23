@@ -1,8 +1,8 @@
 import re
 from spacy.language import Language
 from spacy.matcher import PhraseMatcher, Matcher
+from spacy.tokens import Span
 from spacy.tokens.doc import Doc
-
 
 EXCELCY_MATCHER = 'excelcy-matcher'
 
@@ -60,6 +60,23 @@ class MatcherPipe(object):
     def eval_regex(self, pattern, text):
         return bool(re.compile(pattern).match(text))
 
+    def _filter_spans(self, spans):
+        # Filter a sequence of spans so they don't contain overlaps
+        # For spaCy 2.1.4+: this function is available as spacy.util.filter_spans()
+        def get_sort_key(span2):
+            return span2.end - span2.start, -span2.start
+
+        sorted_spans = sorted(spans, key=get_sort_key, reverse=True)
+        result = []
+        seen_tokens = set()
+        for span in sorted_spans:
+            # Check for end - 1 here because boundaries are inclusive
+            if span.start not in seen_tokens and span.end - 1 not in seen_tokens:
+                result.append(span)
+            seen_tokens.update(range(span.start, span.end))
+        result = sorted(result, key=lambda span: span.start)
+        return result
+
     def __call__(self, doc: Doc):
         """
         The spacy pipeline caller
@@ -71,11 +88,14 @@ class MatcherPipe(object):
         matches = self.matcher(doc)
 
         # process them
+        spans = []
         for match_id, start, end in phrase_matches + matches:
             # start add them into entities list
-            entity = (match_id, start, end)
-            doc.ents += (entity,)
-
+            span = Span(doc, start, end, label=match_id)
+            spans.append(span)
+        # print('Before', [(ent.label_, ent.text) for ent in doc.ents])
+        doc.ents = self._filter_spans(spans + list(doc.ents))
+        # print('After', [(ent.label_, ent.text) for ent in doc.ents])
         return doc
 
 

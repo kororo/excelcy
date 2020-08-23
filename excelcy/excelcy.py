@@ -2,12 +2,13 @@ import os
 import warnings
 import random
 import spacy
+import typing
+
 from excelcy import utils
 from excelcy.errors import Errors
 from excelcy.pipe import MatcherPipe, EXCELCY_MATCHER
 from excelcy.storage import Storage, Source, Prepare, Train
 from excelcy.utils import odict
-
 
 # remove warnings from numpy
 # reference: https://stackoverflow.com/questions/40845304/runtimewarning-numpy-dtype-size-changed-may-indicate-binary-incompatibility
@@ -19,6 +20,7 @@ class ExcelCy(object):
     def __init__(self, storage_cls=None):
         storage_cls = storage_cls or Storage
         self.storage = storage_cls()  # type: Storage
+        self.errors = []  # type: typing.List[BaseException]
         self._nlp = None
 
     @classmethod
@@ -100,9 +102,14 @@ class ExcelCy(object):
         self.storage.nlp_path = self.resolve_ensure_path(file_path=self.storage.config.nlp_name)
 
         try:
-            # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from spaCy.
-            nlp = spacy.load(name=self.storage.nlp_path)
+            if self.storage.nlp_obj:
+                nlp = self.storage.nlp_obj
+            else:
+                # load NLP object with custom path to be loaded first, if fails, get the base which is lang code from spaCy.
+                nlp = spacy.load(name=self.storage.nlp_path)
         except IOError:
+            if not self.storage.config.nlp_base:
+                self.storage.config.nlp_base = 'en_core_web_sm'
             nlp = spacy.load(name=self.storage.config.nlp_base)
         return nlp
 
@@ -124,7 +131,6 @@ class ExcelCy(object):
         Apply textract parsing, described here http://textract.readthedocs.io/en/stable/
         :param source: The source value with kind=textract
         """
-        # TODO: add textract check
         import textract
         # process it
         text = textract.process(self.resolve_path(file_path=source.value), language=self.storage.config.source_language)

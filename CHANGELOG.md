@@ -1,5 +1,10 @@
 # Change Logs
 
+## 0.4.0
+- Add poetry
+- Fix https://github.com/kororo/excelcy/issues/16
+- Update readme from RST to MD
+
 ## 0.3.3
 - Update requirements.txt
 - Improve docs
