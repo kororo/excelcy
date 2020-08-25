@@ -221,7 +221,7 @@ class ExcelCy(object):
                 # ensure offset is valid positions
                 if not gold.offset:
                     offset = train.text.find(gold.subtext)
-                    if offset != -1:
+                    if offset != -1 or gold.offset is None:
                         gold.offset = '%s,%s' % (offset, offset + len(gold.subtext))
                 offset = gold.offset.replace(' ', '').strip()
                 if not entities.get(offset):
