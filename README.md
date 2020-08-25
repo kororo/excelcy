@@ -1,8 +1,8 @@
 ExcelCy
 =======
 
-[![Travis (.org)](https://img.shields.io/travis/kororo/excelcy)](https://pypi.python.org/project/excelcy/)
-[![Coverage Status](https://coveralls.io/repos/github/kororo/excelcy/badge.svg?branch=master)](https://coveralls.io/github/kororo/excelcy?branch=master)
+[![Build Status](https://travis-ci.com/kororo/excelcy.svg?branch=master)](https://travis-ci.com/kororo/excelcy)
+[![Coverage Status](https://coveralls.io/repos/github/kororo/excelcy/badge.svg)](https://coveralls.io/github/kororo/excelcy)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/excelcy.svg)](https://pypi.python.org/project/excelcy/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/excelcy)](https://pypi.python.org/project/excelcy/)
@@ -50,6 +50,8 @@ from excelcy import ExcelCy
 excelcy = ExcelCy()
 # by default it is assume the nlp_base using model en_core_web_sm
 # excelcy.storage.config = Config(nlp_base='en_core_web_sm')
+# if you have existing model, use this
+# excelcy.storage.config = Config(nlp_path='/path/model')
 doc = excelcy.nlp('John is the CEO of this_is_a_unique_company_name')
 # it will show no company entities
 print([(ent.label_, ent.text) for ent in doc.ents])
