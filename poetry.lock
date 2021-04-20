@@ -1,43 +1,42 @@
 [[package]]
-category = "dev"
-description = "Bash tab completion for argparse"
 name = "argcomplete"
+version = "1.10.0"
+description = "Bash tab completion for argparse"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "1.10.0"
 
 [package.extras]
 test = ["coverage", "flake8", "pexpect", "wheel"]
 
 [[package]]
-category = "main"
-description = "Atomic file writes."
-marker = "sys_platform == \"win32\""
 name = "atomicwrites"
+version = "1.4.0"
+description = "Atomic file writes."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.4.0"
 
 [[package]]
-category = "main"
-description = "Classes Without Boilerplate"
 name = "attrs"
+version = "20.1.0"
+description = "Classes Without Boilerplate"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "20.1.0"
 
 [package.extras]
-dev = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "sphinx", "sphinx-rtd-theme", "pre-commit"]
 docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
-tests = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
 
 [[package]]
-category = "dev"
-description = "Screen-scraping library"
 name = "beautifulsoup4"
+version = "4.8.0"
+description = "Screen-scraping library"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "4.8.0"
 
 [package.dependencies]
 soupsieve = ">=1.2"
@@ -47,108 +46,105 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-category = "main"
-description = "The Blis BLAS-like linear algebra library, as a self-contained C-extension."
 name = "blis"
+version = "0.4.1"
+description = "The Blis BLAS-like linear algebra library, as a self-contained C-extension."
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.4.1"
 
 [package.dependencies]
 numpy = ">=1.15.0"
 
 [[package]]
-category = "main"
-description = "Super lightweight function registries for your library"
 name = "catalogue"
+version = "1.0.0"
+description = "Super lightweight function registries for your library"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "1.0.0"
 
 [package.dependencies]
-[package.dependencies.importlib-metadata]
-python = "<3.8"
-version = ">=0.20"
+importlib-metadata = {version = ">=0.20", markers = "python_version < \"3.8\""}
 
 [[package]]
-category = "main"
-description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
-optional = false
-python-versions = "*"
 version = "2020.6.20"
-
-[[package]]
+description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
-description = "Universal encoding detector for Python 2 and 3"
-name = "chardet"
 optional = false
 python-versions = "*"
-version = "3.0.4"
 
 [[package]]
+name = "chardet"
+version = "3.0.4"
+description = "Universal encoding detector for Python 2 and 3"
 category = "main"
-description = "Cross-platform colored terminal text."
-marker = "sys_platform == \"win32\""
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "colorama"
+version = "0.4.3"
+description = "Cross-platform colored terminal text."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "0.4.3"
 
 [[package]]
-category = "main"
-description = "Code coverage measurement for Python"
 name = "coverage"
+version = "5.2.1"
+description = "Code coverage measurement for Python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
-version = "5.2.1"
 
 [package.extras]
 toml = ["toml"]
 
 [[package]]
-category = "main"
-description = "Manage calls to calloc/free through Cython"
 name = "cymem"
-optional = false
-python-versions = "*"
 version = "2.0.3"
+description = "Manage calls to calloc/free through Cython"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
-category = "dev"
-description = "A pure python-based utility to extract text and images from docx files."
 name = "docx2txt"
+version = "0.8"
+description = "A pure python-based utility to extract text and images from docx files."
+category = "dev"
 optional = false
 python-versions = "*"
-version = "0.8"
 
 [[package]]
-category = "dev"
-description = "Ebook library which can handle EPUB2/EPUB3 and Kindle format"
 name = "ebooklib"
+version = "0.17.1"
+description = "Ebook library which can handle EPUB2/EPUB3 and Kindle format"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "0.17.1"
 
 [package.dependencies]
 lxml = "*"
 six = "*"
 
 [[package]]
-category = "main"
-description = "An implementation of lxml.xmlfile for the standard library"
 name = "et-xmlfile"
+version = "1.0.1"
+description = "An implementation of lxml.xmlfile for the standard library"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.0.1"
 
 [[package]]
-category = "dev"
-description = "Extracts emails and attachments saved in Microsoft Outlook's .msg files"
 name = "extract-msg"
+version = "0.23.1"
+description = "Extracts emails and attachments saved in Microsoft Outlook's .msg files"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "0.23.1"
 
 [package.dependencies]
 imapclient = "2.1.0"
@@ -156,20 +152,20 @@ olefile = "0.46"
 tzlocal = "1.5.1"
 
 [[package]]
-category = "main"
-description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
+version = "2.10"
+description = "Internationalized Domain Names in Applications (IDNA)"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.10"
 
 [[package]]
-category = "dev"
-description = "Easy-to-use, Pythonic and complete IMAP client library"
 name = "imapclient"
+version = "2.1.0"
+description = "Easy-to-use, Pythonic and complete IMAP client library"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "2.1.0"
 
 [package.dependencies]
 six = "*"
@@ -179,13 +175,12 @@ doc = ["sphinx"]
 test = ["mock (>=1.3.0)"]
 
 [[package]]
-category = "main"
-description = "Read metadata from Python packages"
-marker = "python_version < \"3.8\""
 name = "importlib-metadata"
+version = "1.7.0"
+description = "Read metadata from Python packages"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-version = "1.7.0"
 
 [package.dependencies]
 zipp = ">=0.5"
@@ -195,28 +190,28 @@ docs = ["sphinx", "rst.linker"]
 testing = ["packaging", "pep517", "importlib-resources (>=1.3)"]
 
 [[package]]
-category = "main"
-description = "Julian dates from proleptic Gregorian and Julian calendars."
 name = "jdcal"
-optional = false
-python-versions = "*"
 version = "1.4.1"
-
-[[package]]
+description = "Julian dates from proleptic Gregorian and Julian calendars."
 category = "main"
-description = "Load me later. A lazy plugin management system."
-name = "lml"
 optional = false
 python-versions = "*"
-version = "0.0.9"
 
 [[package]]
-category = "dev"
-description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
+name = "lml"
+version = "0.0.9"
+description = "Load me later. A lazy plugin management system."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "lxml"
+version = "4.5.2"
+description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
-version = "4.5.2"
 
 [package.extras]
 cssselect = ["cssselect (>=0.7)"]
@@ -225,68 +220,68 @@ htmlsoup = ["beautifulsoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
-category = "main"
-description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
+version = "8.4.0"
+description = "More routines for operating on iterables, beyond itertools"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "8.4.0"
 
 [[package]]
-category = "main"
-description = "Cython bindings for MurmurHash"
 name = "murmurhash"
+version = "1.0.2"
+description = "Cython bindings for MurmurHash"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.0.2"
 
 [[package]]
-category = "main"
-description = "NumPy is the fundamental package for array computing with Python."
 name = "numpy"
+version = "1.19.1"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "1.19.1"
 
 [[package]]
-category = "dev"
-description = "Python package to parse, read and write Microsoft OLE2 files (Structured Storage or Compound Document, Microsoft Office)"
 name = "olefile"
+version = "0.46"
+description = "Python package to parse, read and write Microsoft OLE2 files (Structured Storage or Compound Document, Microsoft Office)"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.46"
 
 [[package]]
-category = "main"
-description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
 name = "openpyxl"
+version = "3.0.5"
+description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
+category = "main"
 optional = false
 python-versions = ">=3.6,"
-version = "3.0.5"
 
 [package.dependencies]
 et-xmlfile = "*"
 jdcal = "*"
 
 [[package]]
-category = "main"
-description = "Core utilities for Python packages"
 name = "packaging"
+version = "20.4"
+description = "Core utilities for Python packages"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "20.4"
 
 [package.dependencies]
 pyparsing = ">=2.0.2"
 six = "*"
 
 [[package]]
-category = "dev"
-description = "PDF parser and analyzer"
 name = "pdfminer.six"
+version = "20181108"
+description = "PDF parser and analyzer"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "20181108"
 
 [package.dependencies]
 pycryptodome = "*"
@@ -294,72 +289,70 @@ six = "*"
 sortedcontainers = "*"
 
 [[package]]
-category = "dev"
-description = "Python Imaging Library (Fork)"
 name = "pillow"
+version = "7.2.0"
+description = "Python Imaging Library (Fork)"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
-version = "7.2.0"
 
 [[package]]
-category = "main"
-description = "The smartest command line arguments parser in the world"
 name = "plac"
+version = "1.1.3"
+description = "The smartest command line arguments parser in the world"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.1.3"
 
 [[package]]
-category = "main"
-description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
+version = "0.13.1"
+description = "plugin and hook calling mechanisms for python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.13.1"
 
 [package.dependencies]
-[package.dependencies.importlib-metadata]
-python = "<3.8"
-version = ">=0.12"
+importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 
 [package.extras]
 dev = ["pre-commit", "tox"]
 
 [[package]]
-category = "main"
-description = "Cython hash table that trusts the keys are pre-hashed"
 name = "preshed"
+version = "3.0.2"
+description = "Cython hash table that trusts the keys are pre-hashed"
+category = "main"
 optional = false
 python-versions = "*"
-version = "3.0.2"
 
 [package.dependencies]
 cymem = ">=2.0.2,<2.1.0"
 murmurhash = ">=0.28.0,<1.1.0"
 
 [[package]]
-category = "main"
-description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
+version = "1.10.0"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.9.0"
 
 [[package]]
-category = "dev"
-description = "Cryptographic library for Python"
 name = "pycryptodome"
+version = "3.9.8"
+description = "Cryptographic library for Python"
+category = "dev"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.9.8"
 
 [[package]]
-category = "main"
-description = "A wrapper library that provides one API to read, manipulate and writedata in different excel formats"
 name = "pyexcel"
+version = "0.6.4"
+description = "A wrapper library that provides one API to read, manipulate and writedata in different excel formats"
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "0.6.4"
 
 [package.dependencies]
 lml = ">=0.0.4"
@@ -372,12 +365,12 @@ xls = ["pyexcel-xls (>=0.5.0)"]
 xlsx = ["pyexcel-xlsx (>=0.5.0)"]
 
 [[package]]
-category = "main"
-description = "A python library to read and write structured data in csv, zipped csvformat and to/from databases"
 name = "pyexcel-io"
+version = "0.5.20"
+description = "A python library to read and write structured data in csv, zipped csvformat and to/from databases"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.5.20"
 
 [package.dependencies]
 lml = ">=0.0.4"
@@ -388,102 +381,99 @@ xls = ["pyexcel-xls (>=0.5.0)"]
 xlsx = ["pyexcel-xlsx (>=0.5.0)"]
 
 [[package]]
-category = "main"
-description = "A wrapper library to read, manipulate and write data in xlsx and xlsmformat"
 name = "pyexcel-xlsx"
+version = "0.5.8"
+description = "A wrapper library to read, manipulate and write data in xlsx and xlsmformat"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.5.8"
 
 [package.dependencies]
 openpyxl = ">=2.6.1"
 pyexcel-io = ">=0.5.3"
 
 [[package]]
-category = "main"
-description = "Python parsing module"
 name = "pyparsing"
+version = "2.4.7"
+description = "Python parsing module"
+category = "main"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "2.4.7"
 
 [[package]]
-category = "main"
-description = "pytest: simple powerful testing with Python"
 name = "pytest"
+version = "5.4.3"
+description = "pytest: simple powerful testing with Python"
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "5.4.3"
 
 [package.dependencies]
-atomicwrites = ">=1.0"
+atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
 attrs = ">=17.4.0"
-colorama = "*"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 more-itertools = ">=4.0.0"
 packaging = "*"
 pluggy = ">=0.12,<1.0"
 py = ">=1.5.0"
 wcwidth = "*"
 
-[package.dependencies.importlib-metadata]
-python = "<3.8"
-version = ">=0.12"
-
 [package.extras]
-checkqa-mypy = ["mypy (v0.761)"]
+checkqa-mypy = ["mypy (==v0.761)"]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
-category = "main"
-description = "Pytest plugin for measuring coverage."
 name = "pytest-cov"
+version = "2.10.1"
+description = "Pytest plugin for measuring coverage."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "2.10.1"
 
 [package.dependencies]
 coverage = ">=4.4"
 pytest = ">=4.6"
 
 [package.extras]
-testing = ["fields", "hunter", "process-tests (2.0.2)", "six", "pytest-xdist", "virtualenv"]
+testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
-category = "dev"
-description = "Generate and manipulate Open XML PowerPoint (.pptx) files"
 name = "python-pptx"
+version = "0.6.18"
+description = "Generate and manipulate Open XML PowerPoint (.pptx) files"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "0.6.18"
 
 [package.dependencies]
+lxml = ">=3.1.0"
 Pillow = ">=3.3.2"
 XlsxWriter = ">=0.5.7"
-lxml = ">=3.1.0"
 
 [[package]]
-category = "dev"
-description = "World timezone definitions, modern and historical"
 name = "pytz"
+version = "2020.1"
+description = "World timezone definitions, modern and historical"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "2020.1"
 
 [[package]]
-category = "main"
-description = "YAML parser and emitter for Python"
 name = "pyyaml"
+version = "5.3.1"
+description = "YAML parser and emitter for Python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "5.3.1"
 
 [[package]]
-category = "main"
-description = "Python HTTP for Humans."
 name = "requests"
+version = "2.24.0"
+description = "Python HTTP for Humans."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "2.24.0"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
@@ -493,39 +483,39 @@ urllib3 = ">=1.21.1,<1.25.0 || >1.25.0,<1.25.1 || >1.25.1,<1.26"
 
 [package.extras]
 security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
+socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
-category = "main"
-description = "Python 2 and 3 compatibility utilities"
 name = "six"
+version = "1.12.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "1.12.0"
 
 [[package]]
-category = "dev"
-description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
 name = "sortedcontainers"
+version = "2.2.2"
+description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "2.2.2"
 
 [[package]]
-category = "dev"
-description = "A modern CSS selector implementation for Beautiful Soup."
 name = "soupsieve"
+version = "2.0.1"
+description = "A modern CSS selector implementation for Beautiful Soup."
+category = "dev"
 optional = false
 python-versions = ">=3.5"
-version = "2.0.1"
 
 [[package]]
-category = "main"
-description = "Industrial-strength Natural Language Processing (NLP) in Python"
 name = "spacy"
+version = "2.3.2"
+description = "Industrial-strength Natural Language Processing (NLP) in Python"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-version = "2.3.2"
 
 [package.dependencies]
 blis = ">=0.4.0,<0.5.0"
@@ -536,7 +526,6 @@ numpy = ">=1.15.0"
 plac = ">=0.9.6,<1.2.0"
 preshed = ">=3.0.2,<3.1.0"
 requests = ">=2.13.0,<3.0.0"
-setuptools = "*"
 srsly = ">=1.0.2,<1.1.0"
 thinc = "7.4.1"
 tqdm = ">=4.38.0,<5.0.0"
@@ -552,65 +541,65 @@ cuda90 = ["cupy-cuda90 (>=5.0.0b4,<9.0.0)"]
 cuda91 = ["cupy-cuda91 (>=5.0.0b4,<9.0.0)"]
 cuda92 = ["cupy-cuda92 (>=5.0.0b4,<9.0.0)"]
 ja = ["sudachipy (>=0.4.5)", "sudachidict-core (>=20200330)"]
-ko = ["natto-py (0.9.0)"]
+ko = ["natto-py (==0.9.0)"]
 lookups = ["spacy-lookups-data (>=0.3.2,<0.4.0)"]
 th = ["pythainlp (>=2.0)"]
 
 [[package]]
-category = "dev"
-description = "Library for performing speech recognition, with support for several engines and APIs, online and offline."
 name = "speechrecognition"
-optional = false
-python-versions = "*"
 version = "3.8.1"
-
-[[package]]
-category = "main"
-description = "Modern high-performance serialization utilities for Python"
-name = "srsly"
-optional = false
-python-versions = "*"
-version = "1.0.2"
-
-[[package]]
+description = "Library for performing speech recognition, with support for several engines and APIs, online and offline."
 category = "dev"
-description = "extract text from any document. no muss. no fuss."
-name = "textract"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "srsly"
+version = "1.0.2"
+description = "Modern high-performance serialization utilities for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "textract"
 version = "1.6.3"
+description = "extract text from any document. no muss. no fuss."
+category = "dev"
+optional = false
+python-versions = "*"
 
 [package.dependencies]
-EbookLib = "0.17.1"
-SpeechRecognition = "3.8.1"
 argcomplete = "1.10.0"
 beautifulsoup4 = "4.8.0"
 chardet = "3.0.4"
 docx2txt = "0.8"
+EbookLib = "0.17.1"
 extract-msg = "0.23.1"
 "pdfminer.six" = "20181108"
 python-pptx = "0.6.18"
 six = "1.12.0"
+SpeechRecognition = "3.8.1"
 xlrd = "1.2.0"
 
 [package.extras]
-pocketsphinx = ["pocketsphinx (0.1.15)"]
+pocketsphinx = ["pocketsphinx (==0.1.15)"]
 
 [[package]]
-category = "main"
-description = "module for creating simple ASCII tables"
 name = "texttable"
+version = "1.6.2"
+description = "module for creating simple ASCII tables"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.6.2"
 
 [[package]]
-category = "main"
-description = "Practical Machine Learning for NLP"
 name = "thinc"
+version = "7.4.1"
+description = "Practical Machine Learning for NLP"
+category = "main"
 optional = false
 python-versions = "*"
-version = "7.4.1"
 
 [package.dependencies]
 blis = ">=0.4.0,<0.5.0"
@@ -634,88 +623,88 @@ cuda91 = ["cupy-cuda91 (>=5.0.0b4)"]
 cuda92 = ["cupy-cuda92 (>=5.0.0b4)"]
 
 [[package]]
-category = "main"
-description = "Fast, Extensible Progress Meter"
 name = "tqdm"
+version = "4.48.2"
+description = "Fast, Extensible Progress Meter"
+category = "main"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-version = "4.48.2"
 
 [package.extras]
 dev = ["py-make (>=0.1.0)", "twine", "argopt", "pydoc-markdown"]
 
 [[package]]
-category = "dev"
-description = "tzinfo object for the local timezone"
 name = "tzlocal"
+version = "1.5.1"
+description = "tzinfo object for the local timezone"
+category = "dev"
 optional = false
 python-versions = "*"
-version = "1.5.1"
 
 [package.dependencies]
 pytz = "*"
 
 [[package]]
-category = "main"
-description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
+version = "1.25.10"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
-version = "1.25.10"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
 secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0.14)", "ipaddress"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
+socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
-category = "main"
-description = "A lightweight console printing and formatting toolkit"
 name = "wasabi"
-optional = false
-python-versions = "*"
 version = "0.7.1"
-
-[[package]]
+description = "A lightweight console printing and formatting toolkit"
 category = "main"
-description = "Measures the displayed width of unicode strings in a terminal"
-name = "wcwidth"
 optional = false
 python-versions = "*"
-version = "0.2.5"
 
 [[package]]
-category = "dev"
-description = "Library for developers to extract data from Microsoft Excel (tm) spreadsheet files"
+name = "wcwidth"
+version = "0.2.5"
+description = "Measures the displayed width of unicode strings in a terminal"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "xlrd"
+version = "1.2.0"
+description = "Library for developers to extract data from Microsoft Excel (tm) spreadsheet files"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.2.0"
 
 [[package]]
-category = "dev"
-description = "A Python module for creating Excel XLSX files."
 name = "xlsxwriter"
+version = "1.3.3"
+description = "A Python module for creating Excel XLSX files."
+category = "dev"
 optional = false
 python-versions = "*"
-version = "1.3.3"
 
 [[package]]
-category = "main"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
 name = "zipp"
+version = "3.1.0"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "3.1.0"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "7ec0616bafe2af441cd205fc4e6abef6774927378a181f24917f8646e03e0a2a"
+lock-version = "1.1"
 python-versions = "^3.6"
+content-hash = "7ec0616bafe2af441cd205fc4e6abef6774927378a181f24917f8646e03e0a2a"
 
 [metadata.files]
 argcomplete = [
@@ -883,6 +872,8 @@ lxml = [
     {file = "lxml-4.5.2-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:8f0ec6b9b3832e0bd1d57af41f9238ea7709bbd7271f639024f2fc9d3bb01293"},
     {file = "lxml-4.5.2-cp38-cp38-win32.whl", hash = "sha256:107781b213cf7201ec3806555657ccda67b1fccc4261fb889ef7fc56976db81f"},
     {file = "lxml-4.5.2-cp38-cp38-win_amd64.whl", hash = "sha256:f161af26f596131b63b236372e4ce40f3167c1b5b5d459b29d2514bd8c9dc9ee"},
+    {file = "lxml-4.5.2-cp39-cp39-manylinux1_i686.whl", hash = "sha256:6f767d11803dbd1274e43c8c0b2ff0a8db941e6ed0f5d44f852fb61b9d544b54"},
+    {file = "lxml-4.5.2-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:d15a801d9037d7512edb2f1e196acebb16ab17bef4b25a91ea2e9a455ca353af"},
     {file = "lxml-4.5.2.tar.gz", hash = "sha256:cdc13a1682b2a6241080745b1953719e7fe0850b40a5c71ca574f090a1391df6"},
 ]
 more-itertools = [
@@ -1008,8 +999,8 @@ preshed = [
     {file = "preshed-3.0.2.tar.gz", hash = "sha256:61d73468c97c1d6d5a048de0b01d5a6fd052123358aca4823cdb277e436436cb"},
 ]
 py = [
-    {file = "py-1.9.0-py2.py3-none-any.whl", hash = "sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2"},
-    {file = "py-1.9.0.tar.gz", hash = "sha256:9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342"},
+    {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
+    {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
 ]
 pycryptodome = [
     {file = "pycryptodome-3.9.8-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:50348edd283afdccddc0938cdc674484533912ba8a99a27c7bfebb75030aa856"},
@@ -1022,25 +1013,30 @@ pycryptodome = [
     {file = "pycryptodome-3.9.8-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:6276478ada411aca97c0d5104916354b3d740d368407912722bd4d11aa9ee4c2"},
     {file = "pycryptodome-3.9.8-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:54bdedd28476dea8a3cd86cb67c0df1f0e3d71cae8022354b0f879c41a3d27b2"},
     {file = "pycryptodome-3.9.8-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:f521178e5a991ffd04182ed08f552daca1affcb826aeda0e1945cd989a9d4345"},
+    {file = "pycryptodome-3.9.8-cp35-cp35m-manylinux2014_aarch64.whl", hash = "sha256:f2e045224074d5664dc9cbabbf4f4d4d46f1ee90f24780e3a9a668fd096ff17f"},
     {file = "pycryptodome-3.9.8-cp35-cp35m-win32.whl", hash = "sha256:a207231a52426de3ff20f5608f0687261a3329d97a036c51f7d4c606a6f30c23"},
     {file = "pycryptodome-3.9.8-cp35-cp35m-win_amd64.whl", hash = "sha256:2b998dc45ef5f4e5cf5248a6edfcd8d8e9fb5e35df8e4259b13a1b10eda7b16b"},
     {file = "pycryptodome-3.9.8-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:03d5cca8618620f45fd40f827423f82b86b3a202c8d44108601b0f5f56b04299"},
     {file = "pycryptodome-3.9.8-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:f78a68c2c820e4731e510a2df3eef0322f24fde1781ced970bf497b6c7d92982"},
     {file = "pycryptodome-3.9.8-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:132a56abba24e2e06a479d8e5db7a48271a73a215f605017bbd476d31f8e71c1"},
+    {file = "pycryptodome-3.9.8-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:cecbf67e81d6144a50dc615629772859463b2e4f815d0c082fa421db362f040e"},
     {file = "pycryptodome-3.9.8-cp36-cp36m-win32.whl", hash = "sha256:67dcad1b8b201308586a8ca2ffe89df1e4f731d5a4cdd0610cc4ea790351c739"},
     {file = "pycryptodome-3.9.8-cp36-cp36m-win_amd64.whl", hash = "sha256:b56638d58a3a4be13229c6a815cd448f9e3ce40c00880a5398471b42ee86f50e"},
     {file = "pycryptodome-3.9.8-cp37-cp37m-macosx_10_6_intel.whl", hash = "sha256:bec2bcdf7c9ce7f04d718e51887f3b05dc5c1cfaf5d2c2e9065ecddd1b2f6c9a"},
     {file = "pycryptodome-3.9.8-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:abc2e126c9490e58a36a0f83516479e781d83adfb134576a5cbe5c6af2a3e93c"},
     {file = "pycryptodome-3.9.8-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:ef39c98d9b8c0736d91937d193653e47c3b19ddf4fc3bccdc5e09aaa4b0c5d21"},
+    {file = "pycryptodome-3.9.8-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:87006cf0d81505408f1ae4f55cf8a5d95a8e029a4793360720ae17c6500f7ecc"},
     {file = "pycryptodome-3.9.8-cp37-cp37m-win32.whl", hash = "sha256:4350a42028240c344ee855f032c7d4ad6ff4f813bfbe7121547b7dc579ecc876"},
     {file = "pycryptodome-3.9.8-cp37-cp37m-win_amd64.whl", hash = "sha256:c8bf40cf6e281a4378e25846924327e728a887e8bf0ee83b2604a0f4b61692e8"},
     {file = "pycryptodome-3.9.8-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d8074c8448cfd0705dfa71ca333277fce9786d0b9cac75d120545de6253f996a"},
     {file = "pycryptodome-3.9.8-cp38-cp38-manylinux1_i686.whl", hash = "sha256:8063a712fba642f78d3c506b0896846601b6de7f5c3d534e388ad0cc07f5a149"},
     {file = "pycryptodome-3.9.8-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:dd302b6ae3965afeb5ef1b0d92486f986c0e65183cd7835973f0b593800590e6"},
+    {file = "pycryptodome-3.9.8-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:663f8de2b3df2e744d6e1610506e0ea4e213bde906795953c1e82279c169f0a7"},
     {file = "pycryptodome-3.9.8-cp38-cp38-win32.whl", hash = "sha256:02e51e1d5828d58f154896ddfd003e2e7584869c275e5acbe290443575370fba"},
     {file = "pycryptodome-3.9.8-cp38-cp38-win_amd64.whl", hash = "sha256:55eb61aca2c883db770999f50d091ff7c14016f2769ad7bca3d9b75d1d7c1b68"},
     {file = "pycryptodome-3.9.8-cp39-cp39-manylinux1_i686.whl", hash = "sha256:39ef9fb52d6ec7728fce1f1693cb99d60ce302aeebd59bcedea70ca3203fda60"},
     {file = "pycryptodome-3.9.8-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:de6e1cd75677423ff64712c337521e62e3a7a4fc84caabbd93207752e831a85a"},
+    {file = "pycryptodome-3.9.8-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:9f62d21bc693f3d7d444f17ed2ad7a913b4c37c15cd807895d013c39c0517dfd"},
     {file = "pycryptodome-3.9.8.tar.gz", hash = "sha256:0e24171cf01021bc5dc17d6a9d4f33a048f09d62cc3f62541e95ef104588bda4"},
 ]
 pyexcel = [
@@ -1085,6 +1081,8 @@ pyyaml = [
     {file = "PyYAML-5.3.1-cp37-cp37m-win_amd64.whl", hash = "sha256:73f099454b799e05e5ab51423c7bcf361c58d3206fa7b0d555426b1f4d9a3eaf"},
     {file = "PyYAML-5.3.1-cp38-cp38-win32.whl", hash = "sha256:06a0d7ba600ce0b2d2fe2e78453a470b5a6e000a985dd4a4e54e436cc36b0e97"},
     {file = "PyYAML-5.3.1-cp38-cp38-win_amd64.whl", hash = "sha256:95f71d2af0ff4227885f7a6605c37fd53d3a106fcab511b8860ecca9fcf400ee"},
+    {file = "PyYAML-5.3.1-cp39-cp39-win32.whl", hash = "sha256:ad9c67312c84def58f3c04504727ca879cb0013b2517c85a9a253f0cb6380c0a"},
+    {file = "PyYAML-5.3.1-cp39-cp39-win_amd64.whl", hash = "sha256:6034f55dab5fea9e53f436aa68fa3ace2634918e8b5994d82f3621c04ff5ed2e"},
     {file = "PyYAML-5.3.1.tar.gz", hash = "sha256:b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d"},
 ]
 requests = [
@@ -1177,6 +1175,7 @@ xlrd = [
     {file = "xlrd-1.2.0.tar.gz", hash = "sha256:546eb36cee8db40c3eaa46c351e67ffee6eeb5fa2650b71bc4c758a29a1b29b2"},
 ]
 xlsxwriter = [
+    {file = "XlsxWriter-1.3.3-py2.7.egg", hash = "sha256:f645e02d35148fe06f8e203b9e09fdb2ddda6fea263395d44144c10ae90b7577"},
     {file = "XlsxWriter-1.3.3-py2.py3-none-any.whl", hash = "sha256:88ab71d464e8f6c3923335cc92d6035260aa9e7c8b27fcbb3a5bc07e2c671d22"},
     {file = "XlsxWriter-1.3.3.tar.gz", hash = "sha256:830cad0a88f0f95e5a8945ee082182aa68ab89e7d9725d0c32c196207634244b"},
 ]
