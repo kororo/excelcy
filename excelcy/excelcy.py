@@ -234,7 +234,7 @@ class ExcelCy(object):
         # train now
         nlp.vocab.vectors.name = 'spacy_pretrained_vectors'
         optimizer = nlp.begin_training()
-        for itn in range(self.storage.config.train_iteration):
+        for itn in range(int(self.storage.config.train_iteration)):
             random.shuffle(train_idx)
             for idx in train_idx:
                 text = self.storage.train.items[idx].text
